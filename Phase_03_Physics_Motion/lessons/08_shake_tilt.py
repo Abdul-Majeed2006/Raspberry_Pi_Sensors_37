@@ -14,7 +14,7 @@
 # the spring wobbles and touches a center pin, closing the circuit.
 #
 # WIRING:
-# - S (Signal) -> GP21 (Safe Pin)
+# - S (Signal) -> GP16
 # - - (GND)    -> GND
 # - + (Power)  -> 3.3V
 # -----------------------------------------------------------------------------
@@ -23,9 +23,10 @@ import machine
 import time
 
 # --- Setup Pins ---
+# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
 # We use PULL_UP because these simple switches usually connect to GND 
 # when they vibrate. This keeps the pin at "1" until it is bumped.
-sensor = machine.Pin(21, machine.Pin.IN, machine.Pin.PULL_UP)
+sensor = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 

@@ -15,7 +15,7 @@
 # circuit.
 #
 # WIRING:
-# - S (Signal) -> GP15 (Safe Pin)
+# - S (Signal) -> GP16
 # - + (VCC)    -> 3.3V 
 # - - (GND)    -> GND
 # -----------------------------------------------------------------------------
@@ -24,8 +24,8 @@ import machine
 import time
 
 # --- Setup Pins ---
-# The Relay is a Digital Output. 
-relay = machine.Pin(15, machine.Pin.OUT)
+# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
+relay = machine.Pin(16, machine.Pin.OUT)
 
 print("System Active. Listen for the physical 'CLICK' of the relay!")
 

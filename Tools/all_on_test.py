@@ -5,13 +5,13 @@ import machine
 # This allows you to 'probe' your hardware without stopping the code.
 
 # --- CONFIGURATION ---
-# Change these if you want to test different pins!
-TEST_PINS = [16, 17, 18, 19, 20, 21]
+# We test the Bottom-Right cluster (16, 17, 18) and the Analog block (26, 27).
+TEST_PINS = [16, 17, 18, 26, 27]
 
 print("========================================")
 print("       THE 'POKE' TEST TOOL")
 print("========================================")
-print(f"Setting pins {TEST_PINS} to HIGH.")
+print(f"Setting Clustered Pins {TEST_PINS} to HIGH.")
 print("\nTROUBLESHOOTING STEPS:")
 print("1. Keep this script running.")
 print("2. Take a wire connected to your LED/Buzzer.")

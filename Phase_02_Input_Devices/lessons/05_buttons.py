@@ -17,8 +17,8 @@
 # until someone pushes a button to force it to 3.3V (1).
 #
 # WIRING:
-# - Button S  -> GP21
-# - Touch S   -> GP20
+# - Button S  -> GP16 (Master Pin)
+# - Touch S   -> GP17 (Nearby Neighbor)
 # - All GND   -> GND
 # - All +     -> 3.3V
 # -----------------------------------------------------------------------------
@@ -28,9 +28,9 @@ import time
 
 # --- Setup Pins ---
 # We use PULL_DOWN to ensure safety and stability.
-# Note: Buttons and Touch sensors are digital (ON/OFF only).
-button = machine.Pin(21, machine.Pin.IN, machine.Pin.PULL_DOWN)
-touch_sensor = machine.Pin(20, machine.Pin.IN, machine.Pin.PULL_DOWN)
+# We cluster these on GP16 and GP17 for clean wiring.
+button = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_DOWN)
+touch_sensor = machine.Pin(17, machine.Pin.IN, machine.Pin.PULL_DOWN)
 
 # The onboard LED acts as our "Success" indicator.
 led = machine.Pin("LED", machine.Pin.OUT)

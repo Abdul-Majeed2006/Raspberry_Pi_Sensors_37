@@ -16,7 +16,7 @@
 # it for the latest numbers!
 #
 # WIRING:
-# - S (Signal) -> GP21 (Safe Pin)
+# - S (Signal) -> GP16
 # - (Center)   -> 3.3V
 # - (-)        -> GND
 # -----------------------------------------------------------------------------
@@ -26,8 +26,8 @@ import dht  # Special library for the DHT protocol
 import time
 
 # --- Setup Pins ---
-# We use the DHT11 class from the library to handle the complex timing.
-sensor = dht.DHT11(machine.Pin(21))
+# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
+sensor = dht.DHT11(machine.Pin(16))
 
 print("System Active. Waiting for initial climate data...")
 

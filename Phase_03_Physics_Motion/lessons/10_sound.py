@@ -15,7 +15,7 @@
 # - Now, if you clap, the LED should flash! This sets the "Threshold."
 #
 # WIRING:
-# - OUT (Signal) -> GP21 (Safe Pin)
+# - OUT (Signal) -> GP16
 # - GND          -> GND
 # - VCC (+)      -> 3.3V
 # -----------------------------------------------------------------------------
@@ -24,8 +24,9 @@ import machine
 import time
 
 # --- Setup Pins ---
+# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
 # The microphone is a digital input. It says "1" when it hears a spike in volume.
-mic_pin = machine.Pin(21, machine.Pin.IN)
+mic_pin = machine.Pin(16, machine.Pin.IN)
 led = machine.Pin("LED", machine.Pin.OUT)
 
 print("System Active. Clap your hands to toggle the light!")

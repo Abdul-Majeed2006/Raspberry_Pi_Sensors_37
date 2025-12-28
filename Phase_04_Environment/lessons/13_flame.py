@@ -16,8 +16,8 @@
 # reacts to the "heat-light" of fire.
 #
 # WIRING:
-# - D0 (Digital) -> GP21 (Safe Pin)
-# - A0 (Analog)  -> GP26 (Safe Pin)
+# - D0 (Digital) -> GP16 (Trigger)
+# - A0 (Analog)  -> GP26 (Meter)
 # - G (GND)      -> GND
 # - + (Power)    -> 3.3V
 # -----------------------------------------------------------------------------
@@ -27,11 +27,12 @@ import time
 
 # --- Setup Pins ---
 # We use both Digital (to act as a trigger) and Analog (to measure distance).
-flame_trigger = machine.Pin(21, machine.Pin.IN)
+# We cluster the Digital Trigger on GP16 and use GP26 for Analog.
+flame_trigger = machine.Pin(16, machine.Pin.IN)
 flame_meter   = machine.ADC(machine.Pin(26))
 
-# We use the buzzer (GP15) to make the alarm sound.
-buzzer = machine.PWM(machine.Pin(15))
+# We use the buzzer on GP17 (right next to GP16) for the siren.
+buzzer = machine.PWM(machine.Pin(17))
 
 print("System Active. Monitoring for IR Flame signature...")
 

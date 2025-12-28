@@ -18,19 +18,18 @@
 # WIRING:
 # - GND -> GND
 # - +   -> 3.3V
-# - SW  -> GP22 (The button inside the knob)
-# - DT  -> GP21 (Data pin)
-# - CLK -> GP20 (Clock pin)
+# - DT  -> GP17 (Data pin)
+# - CLK -> GP16 (Clock pin)
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-# We moved these to 20/21 to avoid the dead pins (13/14).
-# Encoders need to be read as INPUTS.
-dt_pin = machine.Pin(21, machine.Pin.IN)
-clk_pin = machine.Pin(20, machine.Pin.IN)
+# We use GP16 and GP17 (Pins 21/22) because they are physically adjacent.
+# This makes the encoder cables very easy to manage.
+dt_pin = machine.Pin(17, machine.Pin.IN)
+clk_pin = machine.Pin(16, machine.Pin.IN)
 
 # We store the previous state so we can tell when the knob moves.
 previous_value = True

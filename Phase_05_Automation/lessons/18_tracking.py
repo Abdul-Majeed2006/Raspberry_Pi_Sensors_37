@@ -17,7 +17,7 @@
 # line is.
 #
 # WIRING:
-# - S (Signal) -> GP21 (Safe Pin)
+# - S (Signal) -> GP16
 # - + (VCC)    -> 3.3V
 # - - (GND)    -> GND
 # -----------------------------------------------------------------------------
@@ -26,10 +26,10 @@ import machine
 import time
 
 # --- Setup Pins ---
-# The sensor is usually "Active Low" for lines.
+# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
 # - 1 = Light surface (Reflection)
 # - 0 = Dark line (Absorption)
-sensor = machine.Pin(21, machine.Pin.IN)
+sensor = machine.Pin(16, machine.Pin.IN)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 

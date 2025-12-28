@@ -14,7 +14,7 @@
 # Treat it like a concentrated beam of sun!
 #
 # WIRING:
-# - S (Signal) -> GP15
+# - S (Signal) -> GP16
 # - - (GND)    -> GND
 # -----------------------------------------------------------------------------
 
@@ -23,7 +23,8 @@ import time
 
 # --- Setup Pins ---
 # The laser is a DIGITAL output. 1 is ON, 0 is OFF.
-laser = machine.Pin(15, machine.Pin.OUT)
+# We use GP16 (Pin 21) as our primary clustered output pin.
+laser = machine.Pin(16, machine.Pin.OUT)
 
 # --- Data Structure: The Dictionary ---
 # We store the "Translation" for every letter here.

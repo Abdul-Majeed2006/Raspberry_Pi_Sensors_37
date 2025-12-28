@@ -15,7 +15,7 @@
 # 3. The receiver eye sees the bounce and tells the Pico to STOP!
 #
 # WIRING:
-# - OUT (Signal) -> GP21 (Safe Pin)
+# - OUT (Signal) -> GP16
 # - + (VCC)      -> 3.3V
 # - G (GND)      -> GND
 # -----------------------------------------------------------------------------
@@ -24,10 +24,10 @@ import machine
 import time
 
 # --- Setup Pins ---
-# The sensor is "Active Low".
+# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
 # - 0 = OBSTACLE (Seeing a reflection)
 # - 1 = CLEAR (No reflection)
-sensor = machine.Pin(21, machine.Pin.IN)
+sensor = machine.Pin(16, machine.Pin.IN)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 

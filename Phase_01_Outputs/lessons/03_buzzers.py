@@ -17,7 +17,7 @@
 #    to play songs!
 #
 # WIRING:
-# - Positive (+) -> GP15
+# - Positive (+) -> GP16
 # - Negative (-) -> GND
 # -----------------------------------------------------------------------------
 
@@ -26,8 +26,8 @@ import time
 
 # --- Setup Pins ---
 # We use PWM to "vibrate" the pin. 
-# Think of it like a drummer hitting a drum 262 times a second to play a 'C' note.
-buzzer = machine.PWM(machine.Pin(15))
+# We use GP16 (Pin 21) which is easy to find at the bottom-right corner.
+buzzer = machine.PWM(machine.Pin(16))
 
 def play_note(frequency, duration):
     """

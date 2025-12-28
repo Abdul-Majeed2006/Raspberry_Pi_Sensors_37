@@ -15,7 +15,7 @@
 # this "push" and tells the Pico!
 #
 # WIRING:
-# - S (Signal) -> GP21 (Safe Pin)
+# - S (Signal) -> GP16
 # - - (GND)    -> GND
 # - + (Power)  -> 3.3V
 # -----------------------------------------------------------------------------
@@ -24,9 +24,10 @@ import machine
 import time
 
 # --- Setup Pins ---
+# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
 # Most Hall sensors are "Active Low." This means they report "0" when 
 # they see a magnet. We use PULL_UP to keep it at "1" the rest of the time.
-hall_sensor = machine.Pin(21, machine.Pin.IN, machine.Pin.PULL_UP)
+hall_sensor = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 

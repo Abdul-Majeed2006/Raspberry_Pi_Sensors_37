@@ -14,24 +14,22 @@
 # (38,000 times per second). This is called "Modulation."
 #
 # WIRING:
-# 1. Transmitter: S -> GP20, - -> GND
-# 2. Receiver:    S -> GP21, + -> 3.3V, - -> GND
+# 1. Transmitter: S -> GP17, - -> GND
+# 2. Receiver:    S -> GP16, + -> 3.3V, - -> GND
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Transmitter (The "Light Bulb") ---
-# We use PWM to create that super-fast 38,000Hz flicker.
-transmitter = machine.PWM(machine.Pin(20))
+# We use GP17 for the transmitter.
+transmitter = machine.PWM(machine.Pin(17))
 transmitter.freq(38000)
 transmitter.duty_u16(32768) # 50% duty cycle
 
 # --- Setup Receiver (The "Eye") ---
-# The IR Receiver is "Active Low." 
-# - Seeing Light = 0
-# - Light Blocked = 1
-receiver = machine.Pin(21, machine.Pin.IN)
+# We use GP16 (Pin 21) right next to it for the receiver 'Eye'.
+receiver = machine.Pin(16, machine.Pin.IN)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 

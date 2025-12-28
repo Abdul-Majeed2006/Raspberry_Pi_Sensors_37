@@ -15,8 +15,8 @@
 # WIRING:
 # - G (Ground) -> GND
 # - + (Power)  -> 3.3V
-# - S (Signal) -> GP21 (Reads the tilt)
-# - L (LED)    -> GP15 (Controls the light)
+# - S (Signal) -> GP16 (Reads the tilt)
+# - L (LED)    -> GP17 (Controls the light)
 # -----------------------------------------------------------------------------
 
 import machine
@@ -24,12 +24,11 @@ import time
 
 # --- Setup Pins ---
 # The Tilt Switch is an INPUT. The Pico "listens" to this pin.
-# We moved this to GP21 to stay away from the dead pins (13/14).
-tilt_switch = machine.Pin(21, machine.Pin.IN)
+# We use GP16 as our primary "Master" pin for single-signal components.
+tilt_switch = machine.Pin(16, machine.Pin.IN)
 
-# The LED is an OUTPUT. The Pico "talks" to this pin.
-# We use PWM so we can set specific brightness levels (0 to 65535).
-led = machine.PWM(machine.Pin(15))
+# The LED is an OUTPUT. We use GP17 right next to it for the light.
+led = machine.PWM(machine.Pin(17))
 led.freq(1000)
 
 print("Tilt the module to see the 'Magic' happen!")

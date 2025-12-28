@@ -19,7 +19,7 @@
 # - +5V   -> 3.3V (The Pico uses 3.3V logic!)
 # - VRx   -> GP26 (Analog Input 0)
 # - VRy   -> GP27 (Analog Input 1)
-# - SW    -> GP22 (Button)
+# - SW    -> GP18 (Button)
 # -----------------------------------------------------------------------------
 
 import machine
@@ -27,13 +27,13 @@ import time
 
 # --- Setup Pins (The ADC Class) ---
 # We use the ADC class to "measure" the voltage on the pins.
+# These are physically clustered on the right side.
 joy_x = machine.ADC(machine.Pin(26))
 joy_y = machine.ADC(machine.Pin(27))
 
 # The switch is a digital button. 
-# We use PULL_UP because the joystick connects to GND when pressed.
-# (So 1 = Idle, 0 = Pressed).
-joy_btn = machine.Pin(22, machine.Pin.IN, machine.Pin.PULL_UP)
+# We use GP18 (Pin 24) which is right across from the Analog pins.
+joy_btn = machine.Pin(18, machine.Pin.IN, machine.Pin.PULL_UP)
 
 print("Starting Joystick... Move it around!")
 

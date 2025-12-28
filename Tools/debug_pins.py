@@ -2,16 +2,15 @@ import machine
 import time
 
 # --- HARDWARE CONFIGURATION ---
-# If some of your pins are 'dead', change these numbers to different GP pins.
-# We are currently testing 16, 17, and 18.
-PINS_TO_TEST = [16, 17, 18]
+# We test the "Bottom-Right Cluster" (GP16, 17, 18) and ADC block (26, 27).
+PINS_TO_TEST = [16, 17, 18, 26, 27]
 
 print("========================================")
-print("     HARDWARE PIN DIAGNOSTIC TOOL")
+print("     CLUSTERED WIRING DIAGNOSTIC")
 print("========================================")
 print(f"Testing Pins: {PINS_TO_TEST}")
 print("Instructions:")
-print("1. Connect an LED (with resistor) or Buzzer to the pin being tested.")
+print("1. We are testing the Bottom-Right block of the Pico.")
 print("2. If the component DOES NOT turn on, that pin might be 'dead' or broken.")
 print("3. In that case, you must change the pin number in YOUR code to a working one.")
 print("----------------------------------------\n")
