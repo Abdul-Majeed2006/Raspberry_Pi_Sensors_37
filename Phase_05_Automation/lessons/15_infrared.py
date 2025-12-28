@@ -8,10 +8,10 @@
 #
 # WIRING:
 # 1. IR Transmitter (IR LED):
-#    - S (Signal) -> GP14
+#    - S (Signal) -> GP20
 #
 # 2. IR Receiver (Black module with metal cage or bump):
-#    - S (Signal) -> GP16
+#    - S (Signal) -> GP21
 #    - + (Power)  -> 3.3V
 #    - - (GND)    -> GND
 #
@@ -26,14 +26,14 @@ import time
 
 # --- Setup Transmitter (The Gun) ---
 # We must flash it 38,000 times a second (38kHz) for the receiver to see it.
-transmitter = machine.PWM(machine.Pin(14))
+transmitter = machine.PWM(machine.Pin(20))
 transmitter.freq(38000)
 transmitter.duty_u16(32768) # 50% Power
 
 # --- Setup Receiver (The Target) ---
 # It goes LOW (0) when it sees the 38kHz signal.
 # It goes HIGH (1) when the beam is broken.
-receiver = machine.Pin(16, machine.Pin.IN)
+receiver = machine.Pin(21, machine.Pin.IN)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 

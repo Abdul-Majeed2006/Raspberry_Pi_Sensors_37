@@ -8,7 +8,7 @@
 # NEVER look directly into the laser beam. It can damage your eyes.
 #
 # WIRING:
-# - S (Signal) -> GP14
+# - S (Signal) -> GP15
 # - - (GND)    -> GND
 # - (Middle pin is usually not connected or VCC)
 #
@@ -21,8 +21,8 @@
 import machine
 import time
 
-# Setup Laser on Pin 14
-laser = machine.Pin(14, machine.Pin.OUT)
+# Setup Laser on Pin 15
+laser = machine.Pin(15, machine.Pin.OUT)
 
 # Dictionary for Morse Code
 MORSE_CODE = {

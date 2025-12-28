@@ -69,6 +69,15 @@ Learn to interface with the human body.
 
 ---
 
+### **Tools: Diagnostics (Maintenance)**
+
+Diagnostic scripts to test your Pico and sensors.
+
+* **Dead Pin Test:** Identify broken GPIO pins.
+* **All-On Test:** Force pins high for easy hardware probing.
+
+---
+
 ## \ud83d\udee0\ufe0f Prerequisites
 
 ### Hardware

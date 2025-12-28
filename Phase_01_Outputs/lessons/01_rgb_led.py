@@ -5,9 +5,9 @@
 # Goal: Control an RGB LED to cycle through colors using PWM (Pulse Width Modulation).
 #
 # WIRING:
-# - RED Pin   -> GP13
-# - GREEN Pin -> GP14
-# - BLUE Pin  -> GP15
+# - RED Pin   -> GP18
+# - GREEN Pin -> GP17
+# - BLUE Pin  -> GP16
 # - GND (-)   -> Any GND Pin
 #
 # Skills Learnt:
@@ -19,12 +19,18 @@
 import machine
 import time
 
+# --- CONFIGURATION ---
+# Set this to True if your colors are inverted or only one color shows!
+# Common Cathode (Most kits): False
+# Common Anode (Inverted logic): True
+COMMON_ANODE = False 
+
 # --- Setup Pins ---
 # We use PWM (Pulse Width Modulation) to control brightness.
 # Frequency = 1000 Hz (flickers too fast for human eye to see).
-red_led = machine.PWM(machine.Pin(13))
-green_led = machine.PWM(machine.Pin(14))
-blue_led = machine.PWM(machine.Pin(15))
+red_led = machine.PWM(machine.Pin(18))
+green_led = machine.PWM(machine.Pin(17))
+blue_led = machine.PWM(machine.Pin(16))
 
 red_led.freq(1000)
 green_led.freq(1000)
@@ -36,9 +42,16 @@ def set_color(r, g, b):
     Sets the color of the RGB LED.
     Arguments r, g, b should be between 0 (off) and 65535 (full brightness).
     """
-    red_led.duty_u16(r)
-    green_led.duty_u16(g)
-    blue_led.duty_u16(b)
+    if COMMON_ANODE:
+        # Invert the signal: 0 is Full Bright, 65535 is OFF
+        red_led.duty_u16(65535 - r)
+        green_led.duty_u16(65535 - g)
+        blue_led.duty_u16(65535 - b)
+    else:
+        # Standard: 65535 is Full Bright, 0 is OFF
+        red_led.duty_u16(r)
+        green_led.duty_u16(g)
+        blue_led.duty_u16(b)
 
 # --- Main Loop ---
 print("Starting Color Cycle... (Press Ctrl+C to stop)")

@@ -56,6 +56,16 @@ Python is very strict about spaces.
 
 ---
 
+## 👻 4. Dead Pins (The Ghost in the Machine)
+
+Sometimes, a specific pin on your Pico stops working due to a static shock or a previous short circuit.
+
+### "I moved the wire, but nothing happens!"
+If you follow the code and wiring perfectly, but one pin stays silent while others work:
+1.  **Test the Pin:** Use the **`Tools/debug_pins.py`** script in this repository.
+2.  **Confirm the Death:** If the debug script fails to light up that specific pin, it is likely "Dead."
+3.  **The Fix:** Simply move your wire to a DIFFERENT GP hole (e.g., move from 13 to 16) and update the pin number in your Python code: `led = Pin(16)`.
+
 ## 🆘 Still Stuck?
 
 1.  Take a deep breath.
