@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 02: Magic Light Cup (Tilt Switch)
 # -----------------------------------------------------------------------------
+# Module: KY-027 Magic Light Cup Module
 # Goal: Use a "Light Cup" module to detect tilting.
 #       When you tilt the board, the LED brightness changes.
 #

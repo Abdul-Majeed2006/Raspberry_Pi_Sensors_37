@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 13: Fire Detection (Flame Sensor)
 # -----------------------------------------------------------------------------
+# Module: KY-026 Flame Sensor Module
 # Goal: Detect visible flame (like a lighter).
 #       The "Flame Sensor" is actually just a special IR (Infrared) diode.
 #       Fire emits a LOT of Infrared light, which this sensor sees.

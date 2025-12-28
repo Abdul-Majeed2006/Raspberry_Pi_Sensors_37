@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 08: Shake & Tilt (Physics Sensors)
 # -----------------------------------------------------------------------------
+# Modules: KY-002 (Vibration) / KY-020 (Tilt)
 # Goal: Detect physical movement.
 #       We will use the "Vibration Switch" (Spring inside) or "Tilt Switch" (Ball inside).
 #       They act just like buttons: 1 when shaken/tilted, 0 when still.

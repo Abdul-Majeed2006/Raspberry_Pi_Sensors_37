@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 10: Sound Detection (The Microphone)
 # -----------------------------------------------------------------------------
+# Modules: KY-037 (Small) / KY-038 (Big) Sound Sensor
 # Goal: Detect loud noises (like a Clap or a Snap).
 #       The module has a potentiometer (blue box with a screw) to adjust sensitivity.
 #

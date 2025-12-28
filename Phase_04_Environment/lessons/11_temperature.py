@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 11: Temperature (Analog Thermistor)
 # -----------------------------------------------------------------------------
+# Module: KY-013 Analog Temperature Sensor Module
 # Goal: Measure how hot it is!
 #       We will use the "Analog Temperature Sensor" (KY-013).
 #       It works like a resistor that changes with heat.

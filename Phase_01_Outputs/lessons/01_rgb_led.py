@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 01: Light It Up (RGB LED)
 # -----------------------------------------------------------------------------
+# Module: KY-016 RGB LED Module
 # Goal: Control an RGB LED to cycle through colors using PWM (Pulse Width Modulation).
 #
 # WIRING:

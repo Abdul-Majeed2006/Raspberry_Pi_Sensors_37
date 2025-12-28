@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Lesson 05: The Power of Inputs (Buttons & Touch)
-# -----------------------------------------------------------------------------
+# Modules: KY-004 Button / KY-036 Metal Touch
 # Goal: Read a signal from a physical button or touch sensor.
 #       When you press the button, the Pico should react (turn on an LED).
 #
@@ -14,6 +14,11 @@
 #    - S (Signal) -> GP17
 #    - - (GND)    -> GND
 #    - + (Power)  -> 3.3V
+#
+# Skills Learnt:
+# - Digital Inputs (Pull-Down Resistors)
+# - Boolean Logic (OR Gates)
+# - Signal Debouncing
 # -----------------------------------------------------------------------------
 
 import machine

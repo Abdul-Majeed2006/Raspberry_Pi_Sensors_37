@@ -59,6 +59,7 @@ This curriculum is designed to master the 37-in-1 Sensor Kit using MicroPython o
 * **[Lesson 11: Temperature](Phase_04_Environment/notes/11_temperature.ipynb)** (Thermistors)
 * **[Lesson 12: Light Levels](Phase_04_Environment/notes/12_light.ipynb)** (Photoresistors)
 * **[Lesson 13: Fire Detection](Phase_04_Environment/notes/13_flame.ipynb)** (IR Flame Sensors)
+* **[Lesson 17: Climate Monitoring](Phase_04_Environment/notes/17_dht11.ipynb)** (Temperature & Humidity)
 * **\ud83c\udfc6 Capstone Project:** [The Weather Station](Phase_04_Environment/notes/Project_04_Weather_Station.md)
 
 ## Phase 5: Automation
@@ -72,4 +73,16 @@ This curriculum is designed to master the 37-in-1 Sensor Kit using MicroPython o
 * **[Lesson 14: Relays](Phase_05_Automation/notes/14_relay.ipynb)** (High Power Switching)
 * **[Lesson 15: Infrared Tripwires](Phase_05_Automation/notes/15_infrared.ipynb)** (Security)
 * **[Lesson 16: Robot Vision](Phase_05_Automation/notes/16_robot.ipynb)** (Obstacle Avoidance)
+* **[Lesson 18: Path Finder](Phase_05_Automation/notes/18_tracking.ipynb)** (Tracking Sensors)
 * **\ud83c\udfc6 Capstone Project:** [The Robot Brain](Phase_05_Automation/notes/Project_05_Robot_Brain.md)
+
+## Phase 6: Advanced Sensing (Bio-Metrics)
+
+**⏱️ Est. Time: 1 Hour** | **🧠 Learn:** Signal Processing, Peak Detection, Filtering
+
+> [Go to Folder](Phase_06_Advanced_Sensing/)
+
+**Goal:** Interface with the human body.
+
+* **[Lesson 19: Heartbeat Monitor](Phase_06_Advanced_Sensing/notes/19_heartbeat.ipynb)**
+* **\ud83c\udfc6 Graduation Project:** [The Life Support HUD](Phase_06_Advanced_Sensing/notes/Project_06_Life_HUD.md)

@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 07: Spinning Control (Rotary Encoder)
 # -----------------------------------------------------------------------------
+# Module: KY-040 Rotary Encoder Module
 # Goal: Read a Rotary Encoder (the knob that spins forever).
 #       Used for volume knobs, menu scrolling, etc.
 #

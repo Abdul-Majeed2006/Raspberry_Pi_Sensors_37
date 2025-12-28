@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 16: Robot Vision (Obstacle Avoidance)
 # -----------------------------------------------------------------------------
+# Module: KY-032 Obstacle Avoidance Module
 # Goal: Build the brain of a Roomba.
 #       We use the "Obstacle Avoidance Sensor".
 #       It emits IR light and checks if it bounces back (Reflection).

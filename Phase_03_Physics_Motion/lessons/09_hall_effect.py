@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 09: Magnetic Fields (Hall Effect)
 # -----------------------------------------------------------------------------
+# Module: KY-003 Hall Magnetic Sensor Module
 # Goal: Detect magnets!
 #       We will use the "Hall Effect" sensor (usually a small black chip).
 #       Some modules are Digital (ON/OFF), some are Analog (Strength).

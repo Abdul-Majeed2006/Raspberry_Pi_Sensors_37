@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 15: Invisible Tripwire (Infrared)
 # -----------------------------------------------------------------------------
+# Modules: KY-005 IR Transmitter / KY-022 IR Receiver
 # Goal: Create a secret security beam.
 #       IR Receivers (VS1838B) are designed to see flashing light (38kHz),
 #       NOT constant light. This prevents sunlight from triggering them.
@@ -11,7 +12,6 @@
 #
 # 2. IR Receiver (Black module with metal cage or bump):
 #    - S (Signal) -> GP16
-#    - + (Power)  -> 3.3V
 #    - + (Power)  -> 3.3V
 #    - - (GND)    -> GND
 #

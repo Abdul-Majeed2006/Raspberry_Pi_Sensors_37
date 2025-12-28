@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 03: Making Noise (Active vs Passive Buzzers)
 # -----------------------------------------------------------------------------
+# Modules: KY-006 (Passive) / KY-012 (Active)
 # Goal: Learn the difference between Active and Passive buzzers.
 #       Types of buzzers in your kit:
 #       1. Active Buzzer (Usually has a "REMOVE SEAL" sticker). Beeps when powered.

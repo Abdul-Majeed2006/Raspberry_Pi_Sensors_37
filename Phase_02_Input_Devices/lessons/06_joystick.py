@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 06: Analog Control (The Joystick)
 # -----------------------------------------------------------------------------
+# Module: KY-023 Joystick Module
 # Goal: Read "Analog" signals. A button is 0 or 1. A Joystick is 0 to 65535!
 #       We will read the X and Y positions of the thumbstick.
 #

@@ -4,10 +4,11 @@
 
 You have mastered Environmental Sensing:
 *   **Temperature** (Heat)
+*   **Humidity** (Dampness)
 *   **Light** (Brightness)
 *   **Fire** (Safety)
 
-Now, you must build a comprehensive **Weather Station Dashboard**.
+Now, you must build a comprehensive **Digital Climate Dashboard**.
 
 ## 🎯 The Mission
 

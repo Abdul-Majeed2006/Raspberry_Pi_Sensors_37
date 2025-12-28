@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 04: Laser Precision (Morse Code Transmitter)
 # -----------------------------------------------------------------------------
+# Module: KY-008 Laser Transmitter Module
 # Goal: Use the Laser Module to send a secret message using Morse Code.
 #
 # SAFETY WARNING:

@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 14: Heavy Lifting (The Relay)
 # -----------------------------------------------------------------------------
+# Module: KY-019 Relay Module
 # Goal: Control high-power devices physically.
 #       A "Relay" is a mechanical switch controlled by a magnet.
 #       You will HEAR it "Click" when it turns on.

@@ -16,10 +16,10 @@ The curriculum is divided into **5 Phases**, each focusing on a core concept of 
 
 Learn to control the world.
 
-*   **L01:** RGB LEDs (PWM & Color Mixing)
-*   **L02:** Magic Light Cup (Tilt Switches)
-*   **L03:** Buzzers (Sound Frequencies)
-*   **L04:** Laser Transmitters (Morse Code)
+* **L01:** RGB LEDs (PWM & Color Mixing)
+* **L02:** Magic Light Cup (Tilt Switches)
+* **L03:** Buzzers (Sound Frequencies)
+* **L04:** Laser Transmitters (Morse Code)
 *   \ud83c\udfc6 **Capstone Project 1:** The Morse Code Annunciator
 
 ### **Phase 2: Human Inputs (Interaction)**
@@ -47,6 +47,7 @@ Learn to read the room.
 *   **L11:** Temperature (Thermistors)
 *   **L12:** Light Levels (Photoresistors)
 *   **L13:** Fire Detection (IR Flame Sensors)
+*   **L17:** Climate Monitoring (DHT11)
 *   \ud83c\udfc6 **Capstone Project 4:** The Weather Station
 
 ### **Phase 5: Automation (Robotics)**
@@ -56,7 +57,15 @@ Learn to build autonomous systems.
 *   **L14:** Relays (High Power Switching)
 *   **L15:** Infrared Tripwires (Security)
 *   **L16:** Robot Vision (Obstacle Avoidance)
+*   **L18:** Path Finder (Tracking Sensors)
 *   \ud83c\udfc6 **Capstone Project 5:** The Robot Brain
+
+### **Phase 6: Advanced Projects (Bio-Metrics)**
+
+Learn to interface with the human body.
+
+*   **L19:** Heartbeat Monitor (Bio-Metrics)
+*   \ud83c\udfc6 **Final Graduation Project:** The Life Support HUD
 
 ---
 

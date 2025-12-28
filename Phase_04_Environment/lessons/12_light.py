@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Lesson 12: Night Vision (Light Sensors)
 # -----------------------------------------------------------------------------
+# Module: KY-018 Photoresistor Module
 # Goal: Detect how bright the room is.
 #       We will use a "Photoresistor" (LDR - Light Dependent Resistor).
 #       It works exactly like the Thermistor: Resistance changes with LIGHT.
