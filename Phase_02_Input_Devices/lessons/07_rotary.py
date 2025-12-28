@@ -2,57 +2,71 @@
 # Lesson 07: Spinning Control (Rotary Encoder)
 # -----------------------------------------------------------------------------
 # Module: KY-040 Rotary Encoder Module
-# Goal: Read a Rotary Encoder (the knob that spins forever).
-#       Used for volume knobs, menu scrolling, etc.
+# Goal: Detect the direction and speed of a spinning knob.
 #
-# WIRING (KY-040):
+# WHY THIS MATTERS:
+# Unlike a Volume Knob in an old car (which stops at a certain point), a 
+# Rotary Encoder spins forever. It's used on modern stereos, 3D printers, 
+# and digital cameras to scroll through menus.
+#
+# HOW IT WORKS (Quadrature Encoding):
+# Inside are two switches (CLK and DT). When you spin, they click on and off 
+# but one is slightly behind the other. 
+# - If CLK clicks FIRST, you are spinning RIGHT.
+# - If DT clicks FIRST, you are spinning LEFT.
+#
+# WIRING:
 # - GND -> GND
 # - +   -> 3.3V
-# - SW  -> GP22 (Button) - Optional
-# - DT  -> GP18 (Data)
-# - CLK -> GP19 (Clock)
-#
-# Skills Learnt:
-# - Rotary Encoding (Quadrature)
-# - State Tracking
-# - High-Speed Polling
+# - SW  -> GP22 (The button inside the knob)
+# - DT  -> GP21 (Data pin)
+# - CLK -> GP20 (Clock pin)
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-dt_pin = machine.Pin(18, machine.Pin.IN)
-clk_pin = machine.Pin(19, machine.Pin.IN)
+# We moved these to 20/21 to avoid the dead pins (13/14).
+# Encoders need to be read as INPUTS.
+dt_pin = machine.Pin(21, machine.Pin.IN)
+clk_pin = machine.Pin(20, machine.Pin.IN)
 
+# We store the previous state so we can tell when the knob moves.
 previous_value = True
-count = 0
+counter = 0
 
-def rotary_changed():
-    # We call this every time the logic loop runs
-    global previous_value, count
+def update_encoder():
+    """
+    Checks if the knob has moved and updates the counter.
+    """
+    global previous_value, counter
     
-    # Read the CLK pin
+    # Read the current state of the CLK pin
     current_value = clk_pin.value()
     
-    # If the CLK pin changed logic (e.g. went from 0 to 1 or 1 to 0)
-    # detecting a "pulse"
+    # If the pin state CHANGED (e.g. from 1 to 0), the knob moved!
     if current_value != previous_value:
         
-        # We need to check the DT pin to know the direction.
-        # If CLK != DT, we are spinning CLOCKWISE.
+        # Now we check the DT pin to see which way it's spinning.
+        # This is the "Magic" of encoders: comparing the two pins.
         if dt_pin.value() != current_value:
-            count += 1
-            print("Clockwise ->", count)
+            # Spinning Clockwise
+            counter += 1
+            print(">>> CLOCKWISE [", counter, "]")
         else:
-            # Otherwise we are spinning COUNTER-CLOCKWISE
-            count -= 1
-            print("Counter-Clockwise <-", count)
+            # Spinning Counter-Clockwise
+            counter -= 1
+            print("<<< COUNTER-CLOCKWISE [", counter, "]")
             
+    # Save the current value for the next check
     previous_value = current_value
 
-print("Start spinning!")
+print("System Ready. Start spinning the knob!")
 
+# --- The High Speed Loop ---
 while True:
-    rotary_changed()
-    # No sleep here! We need to run FAST to catch the pulses.
+    # We call our function as fast as possible. 
+    # If we add a time.sleep() here, we might MISS a pulse while the 
+    # computer is sleeping!
+    update_encoder()

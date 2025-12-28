@@ -1,53 +1,52 @@
 # -----------------------------------------------------------------------------
-# Lesson 15: Invisible Tripwire (Infrared)
+# Lesson 15: Invisible Tripwire (Infrared Beam)
 # -----------------------------------------------------------------------------
 # Modules: KY-005 IR Transmitter / KY-022 IR Receiver
-# Goal: Create a secret security beam.
-#       IR Receivers (VS1838B) are designed to see flashing light (38kHz),
-#       NOT constant light. This prevents sunlight from triggering them.
+# Goal: Build an invisible security beam that triggers when someone walks through.
+#
+# WHY THIS MATTERS:
+# This is how your TV remote works, and how automatic garage doors know if 
+# a car (or a cat) is in the way before they close. It's a "Wireless Wire."
+#
+# HOW IT WORKS (The 38kHz Secret):
+# The sun emits IR light too. To stop the sun from scale-triggering our 
+# alarm, the receiver ONLY looks for light flashing at exactly 38,000Hz 
+# (38,000 times per second). This is called "Modulation."
 #
 # WIRING:
-# 1. IR Transmitter (IR LED):
-#    - S (Signal) -> GP20
-#
-# 2. IR Receiver (Black module with metal cage or bump):
-#    - S (Signal) -> GP21
-#    - + (Power)  -> 3.3V
-#    - - (GND)    -> GND
-#
-# Skills Learnt:
-# - Signal Modulation (38kHz)
-# - PWM Frequency Generation
-# - Receiver Demodulation
+# 1. Transmitter: S -> GP20, - -> GND
+# 2. Receiver:    S -> GP21, + -> 3.3V, - -> GND
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Transmitter (The Gun) ---
-# We must flash it 38,000 times a second (38kHz) for the receiver to see it.
+# --- Setup Transmitter (The "Light Bulb") ---
+# We use PWM to create that super-fast 38,000Hz flicker.
 transmitter = machine.PWM(machine.Pin(20))
 transmitter.freq(38000)
-transmitter.duty_u16(32768) # 50% Power
+transmitter.duty_u16(32768) # 50% duty cycle
 
-# --- Setup Receiver (The Target) ---
-# It goes LOW (0) when it sees the 38kHz signal.
-# It goes HIGH (1) when the beam is broken.
+# --- Setup Receiver (The "Eye") ---
+# The IR Receiver is "Active Low." 
+# - Seeing Light = 0
+# - Light Blocked = 1
 receiver = machine.Pin(21, machine.Pin.IN)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 
-print("Beam Active. Don't cross the line!")
+print("Security System Online. Try to block the invisible beam!")
 
 while True:
-    # 0 = Safe (Seeing Signal)
-    # 1 = BROKEN (Blocked Signal)
-    status = receiver.value()
+    # Read the eye
+    beam_broken = receiver.value()
     
-    if status == 1:
-        print("ALARM! BEAM BROKEN!")
-        led.value(1) # Flash LED
+    if beam_broken == 1:
+        # If the beam is broken, the 'Eye' goes High (1)
+        print(">>> ALERT: INTRUDER DETECTED <<<")
+        led.value(1) 
     else:
+        # Beam is solid, everything is fine.
         led.value(0)
         
-    time.sleep(0.1)
+    time.sleep(0.1) # Check 10 times per second

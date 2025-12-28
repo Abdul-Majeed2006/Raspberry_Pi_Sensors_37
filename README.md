@@ -20,52 +20,52 @@ Learn to control the world.
 * **L02:** Magic Light Cup (Tilt Switches)
 * **L03:** Buzzers (Sound Frequencies)
 * **L04:** Laser Transmitters (Morse Code)
-*   \ud83c\udfc6 **Capstone Project 1:** The Morse Code Annunciator
+* 🏆 **Capstone Project 1:** The Morse Code Annunciator
 
 ### **Phase 2: Human Inputs (Interaction)**
 
 Learn to listen to the user.
 
-*   **L05:** Buttons & Touch Sensors (Digital Inputs)
-*   **L06:** Joysticks (Analog Inputs & ADCs)
-*   **L07:** Rotary Encoders (Quadrature Logic)
-*   \ud83c\udfc6 **Capstone Project 2:** The Digital Safe Cracker
+* **L05:** Buttons & Touch Sensors (Digital Inputs)
+* **L06:** Joysticks (Analog Inputs & ADCs)
+* **L07:** Rotary Encoders (Quadrature Logic)
+* 🏆 **Capstone Project 2:** The Digital Safe Cracker
 
 ### **Phase 3: Physics & Motion (The Real World)**
 
 Learn to detect physical forces.
 
-*   **L08:** Shake & Vibration Sensors
-*   **L09:** Hall Effect (Magnetic Fields)
-*   **L10:** Sound Detection (Microphones)
-*   \ud83c\udfc6 **Capstone Project 3:** The Magic Wand
+* **L08:** Shake & Vibration Sensors
+* **L09:** Hall Effect (Magnetic Fields)
+* **L10:** Sound Detection (Microphones)
+* 🏆 **Capstone Project 3:** The Magic Wand
 
 ### **Phase 4: Environmental Sensing (Atmosphere)**
 
 Learn to read the room.
 
-*   **L11:** Temperature (Thermistors)
-*   **L12:** Light Levels (Photoresistors)
-*   **L13:** Fire Detection (IR Flame Sensors)
-*   **L17:** Climate Monitoring (DHT11)
-*   \ud83c\udfc6 **Capstone Project 4:** The Weather Station
+* **L11:** Temperature (Thermistors)
+* **L12:** Light Levels (Photoresistors)
+* **L13:** Fire Detection (IR Flame Sensors)
+* **L17:** Climate Monitoring (DHT11)
+* 🏆 **Capstone Project 4:** The Weather Station
 
 ### **Phase 5: Automation (Robotics)**
 
 Learn to build autonomous systems.
 
-*   **L14:** Relays (High Power Switching)
-*   **L15:** Infrared Tripwires (Security)
-*   **L16:** Robot Vision (Obstacle Avoidance)
-*   **L18:** Path Finder (Tracking Sensors)
-*   \ud83c\udfc6 **Capstone Project 5:** The Robot Brain
+* **L14:** Relays (High Power Switching)
+* **L15:** Infrared Tripwires (Security)
+* **L16:** Robot Vision (Obstacle Avoidance)
+* **L18:** Path Finder (Tracking Sensors)
+* 🏆 **Capstone Project 5:** The Robot Brain
 
 ### **Phase 6: Advanced Projects (Bio-Metrics)**
 
 Learn to interface with the human body.
 
-*   **L19:** Heartbeat Monitor (Bio-Metrics)
-*   \ud83c\udfc6 **Final Graduation Project:** The Life Support HUD
+* **L19:** Heartbeat Monitor (Bio-Metrics)
+* 🏆 **Final Graduation Project:** The Life Support HUD
 
 ---
 
@@ -73,12 +73,12 @@ Learn to interface with the human body.
 
 Diagnostic scripts to test your Pico and sensors.
 
-* **Dead Pin Test:** Identify broken GPIO pins.
-* **All-On Test:** Force pins high for easy hardware probing.
+*   **Dead Pin Test:** Identify broken GPIO pins.
+*   **All-On Test:** Force pins high for easy hardware probing.
 
 ---
 
-## \ud83d\udee0\ufe0f Prerequisites
+## 🛠️ Prerequisites
 
 ### Hardware
 
@@ -97,13 +97,21 @@ Diagnostic scripts to test your Pico and sensors.
 
 ---
 
-## \u26a0\ufe0f Legal & Licensing
+## 🆘 Still Stuck?
 
-**\u00a9 Copyright 2024-2025. All Rights Reserved.**
+1. Take a deep breath.
+2. Read the error message in the terminal. It usually tells you exactly which line number is broken.
+3. Check the wiring diagram in the Lesson Note again.
+
+---
+
+## ⚠️ Legal & Licensing
+
+**© Copyright 2024-2025. All Rights Reserved.**
 
 This curriculum is **Proprietary Intellectual Property**.
 
-*   **[LICENSE](LICENSE):** Usage terms. Strict "No Redistribution" policy.
-*   **[LEGAL NOTICE](LEGAL_NOTICE.md):** Liability disclaimer and safety warnings.
+* **[LICENSE](LICENSE):** Usage terms. Strict "No Redistribution" policy.
+* **[LEGAL NOTICE](LEGAL_NOTICE.md):** Liability disclaimer and safety warnings.
 
 By using this code, you agree that the Author is not liable for any hardware damage or personal injury. **Always use safety glasses when working with Lasers or heavy machinery.**

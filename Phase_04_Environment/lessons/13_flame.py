@@ -2,54 +2,57 @@
 # Lesson 13: Fire Detection (Flame Sensor)
 # -----------------------------------------------------------------------------
 # Module: KY-026 Flame Sensor Module
-# Goal: Detect visible flame (like a lighter).
-#       The "Flame Sensor" is actually just a special IR (Infrared) diode.
-#       Fire emits a LOT of Infrared light, which this sensor sees.
+# Goal: Detect the specific light spectrum of fire and trigger a "Fire Alarm."
+#
+# WHY THIS MATTERS:
+# This is a critical safety component. It's used in industrial furnaces and 
+# space heaters to ensure the flame is actually burning. If the flame goes 
+# out, the gas must be shut off instantly to prevent an explosion!
+#
+# HOW IT WORKS:
+# The black bulb on the sensor is an IR (Infrared) Receiver. 
+# Fire emits a very specific frequency of Infrared light. The black coating 
+# on the bulb "filters out" normal visible light so the sensor only 
+# reacts to the "heat-light" of fire.
 #
 # WIRING:
-# - A0 (Analog) -> GP26 (Optional - to see "How close" the fire is)
-# - D0 (Digital)-> GP16 (Alarm trigger)
-# - G (GND)     -> GND
-# - + (Power)   -> 3.3V
-#
-# Skills Learnt:
-# - Dual Mode Sensors (Analog + Digital)
-# - Sound Synthesis (Alarms)
-# - Safety Systems
+# - D0 (Digital) -> GP21 (Safe Pin)
+# - A0 (Analog)  -> GP26 (Safe Pin)
+# - G (GND)      -> GND
+# - + (Power)    -> 3.3V
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-# Use Digital Pin for specific measuring, Analog for range.
-flame_digital = machine.Pin(16, machine.Pin.IN)
-flame_analog  = machine.ADC(machine.Pin(26))
+# We use both Digital (to act as a trigger) and Analog (to measure distance).
+flame_trigger = machine.Pin(21, machine.Pin.IN)
+flame_meter   = machine.ADC(machine.Pin(26))
 
-buzzer = machine.PWM(machine.Pin(15)) # Reuse our buzzer
+# We use the buzzer (GP15) to make the alarm sound.
+buzzer = machine.PWM(machine.Pin(15))
 
-print("Monitoring for Fire...")
+print("System Active. Monitoring for IR Flame signature...")
 
-def alarm():
-    # Wee-Woo sound
-    buzzer.freq(500)
-    buzzer.duty_u16(32768)
-    time.sleep(0.2)
-    buzzer.freq(800)
-    time.sleep(0.2)
+def play_siren():
+    """Plays a high-pitched Wee-Woo sound."""
+    buzzer.freq(1000)
+    buzzer.duty_u16(32768) # 50% volume
+    time.sleep(0.1)
+    buzzer.freq(1500)
+    time.sleep(0.1)
 
 while True:
-    # 1. Digital Check (Is there fire?)
-    # Most sensors go LOW (0) when fire is detected.
-    if flame_digital.value() == 0:
-        print("!! FIRE DETECTED !!")
-        alarm()
+    # 1. Digital Detection
+    # 0 = FIRE DETECTED (Active Low)
+    if flame_trigger.value() == 0:
+        # Calculate how close it is (Smaller number = closer/stronger)
+        strength = flame_meter.read_u16()
+        print(f"!!! ALERT: FIRE DETECTED !!! (Intensity: {strength})")
+        play_siren()
     else:
-        buzzer.duty_u16(0) # Silence
+        # No fire, be quiet.
+        buzzer.duty_u16(0) 
         
-    # 2. Analog Check (How close?)
-    # Lower value = Closer/Hotter
-    raw_val = flame_analog.read_u16()
-    # print(f"IR Level: {raw_val}") # Uncomment to calibraten
-        
-    time.sleep(0.1)
+    time.sleep(0.1) # Check 10 times per second

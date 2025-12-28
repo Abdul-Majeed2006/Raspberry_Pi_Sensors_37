@@ -2,43 +2,51 @@
 # Lesson 17: Climate Monitoring (DHT11)
 # -----------------------------------------------------------------------------
 # Module: KY-015 Temperature & Humidity Sensor (DHT11)
-# Goal: Measure both Temperature AND Humidity using a digital protocol.
+# Goal: Measure both Temperature AND Humidity using a specialized digital brain.
+#
+# WHY THIS MATTERS:
+# Knowing just the temperature isn't enough for plants or computers. 
+# "Relative Humidity" tells us how much water is in the air. High humidity 
+# makes hard drives rust and people feel hotter! 
+#
+# HOW IT WORKS (The Digital Brain):
+# Unlike the Analog thermistor (Lesson 11), the DHT11 has its own tiny 
+# computer inside. It measures the air and then "talks" to the Pico using a 
+# digital language (Single-Bus). Instead of measuring voltage, we just ask 
+# it for the latest numbers!
 #
 # WIRING:
-# - S (Signal) -> GP16
-# - middle (+) -> 3.3V
+# - S (Signal) -> GP21 (Safe Pin)
+# - (Center)   -> 3.3V
 # - (-)        -> GND
-#
-# Skills Learnt:
-# - Digital Protocols (Single-Bus)
-# - Using built-in libraries (dht)
-# - Humidity vs Temperature data
 # -----------------------------------------------------------------------------
 
 import machine
-import dht
+import dht  # Special library for the DHT protocol
 import time
 
 # --- Setup Pins ---
-# The DHT11 uses a specific digital protocol, so we use the 'dht' library.
-sensor = dht.DHT11(machine.Pin(16))
+# We use the DHT11 class from the library to handle the complex timing.
+sensor = dht.DHT11(machine.Pin(21))
 
-print("Starting Climate Monitor...")
+print("System Active. Waiting for initial climate data...")
 
 while True:
     try:
-        # 1. Trigger the measurement
+        # 1. Trigger the measurement (The Pico asks the sensor to wake up)
         sensor.measure()
         
-        # 2. Read the values
-        temp = sensor.temperature()
+        # 2. Grab the latest numbers from the sensor's memory
+        temp_c = sensor.temperature()
         hum = sensor.humidity()
+        temp_f = (temp_c * 9/5) + 32
         
-        # 3. Print Results
-        print(f"Temp: {temp}°C | Humidity: {hum}%")
+        print(f"Climate: {temp_c}°C ({temp_f:.1f}°F) | Humidity: {hum}%")
         
-    except OSError as e:
-        print("Failed to read sensor. Check wiring!")
+    except OSError:
+        # DHT11 is sensitive to timing. If it fails, just wait and try again.
+        print("Reading timed out. Retrying...")
         
-    # DHT11 needs at least 1-2 seconds between readings!
-    time.sleep(2)
+    # IMPORTANT: The DHT11 is slow. 
+    # If you ask it for data too fast (less than 2 seconds), it will error out!
+    time.sleep(2.0)

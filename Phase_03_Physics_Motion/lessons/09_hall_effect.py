@@ -2,44 +2,44 @@
 # Lesson 09: Magnetic Fields (Hall Effect)
 # -----------------------------------------------------------------------------
 # Module: KY-003 Hall Magnetic Sensor Module
-# Goal: Detect magnets!
-#       We will use the "Hall Effect" sensor (usually a small black chip).
-#       Some modules are Digital (ON/OFF), some are Analog (Strength).
-#       We will treat it as a Digital Switch for now.
+# Goal: Detect if a magnet is nearby without any physical contact.
+#
+# WHY THIS MATTERS:
+# This is how your laptop knows when you close the lid (there's a magnet in 
+# the screen and a Hall sensor in the keyboard). It's also used in anti-lock 
+# brakes (ABS) to count how fast wheels are spinning!
+#
+# HOW IT WORKS:
+# The "Hall Effect" is a scientific discovery: electricity moving through a 
+# conductor gets pushed sideways by a magnetic field. The sensor detects 
+# this "push" and tells the Pico!
 #
 # WIRING:
-# - S (Signal) -> GP16
+# - S (Signal) -> GP21 (Safe Pin)
 # - - (GND)    -> GND
 # - + (Power)  -> 3.3V
-#
-# Skills Learnt:
-# - Digital Inputs (Active Low)
-# - Internal Pull-Up Resistors
-# - Magnetic Sensing Logic
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-# Most Hall sensors pull the pin LOW (0) when a magnet is near.
-# So we usually want a PULL_UP resistor.
-hall_sensor = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
+# Most Hall sensors are "Active Low." This means they report "0" when 
+# they see a magnet. We use PULL_UP to keep it at "1" the rest of the time.
+hall_sensor = machine.Pin(21, machine.Pin.IN, machine.Pin.PULL_UP)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 
-print("Waiting for a Magnet...")
+print("System Active. Bring a magnet close to the black chip...")
 
 while True:
-    # Read the value
-    # 1 = No Magnet (because of Pull-Up)
-    # 0 = Magnet Detected (The sensor connects to Ground)
-    is_magnet_near = hall_sensor.value()
-    
-    if is_magnet_near == 0:
-        print("MAGNET DETECTED!")
-        led.value(1) # Turn LED on
+    # --- Reading the Magnetic State ---
+    # 0 = Detected (The magnetic field opened the gate)
+    # 1 = Nothing nearby
+    if hall_sensor.value() == 0:
+        print(">>> MAGNET DETECTED <<<")
+        led.value(1) 
     else:
-        led.value(0) # Turn LED off
+        led.value(0) 
         
-    time.sleep(0.1)
+    time.sleep(0.1) 

@@ -2,70 +2,81 @@
 # Lesson 03: Making Noise (Active vs Passive Buzzers)
 # -----------------------------------------------------------------------------
 # Modules: KY-006 (Passive) / KY-012 (Active)
-# Goal: Learn the difference between Active and Passive buzzers.
-#       Types of buzzers in your kit:
-#       1. Active Buzzer (Usually has a "REMOVE SEAL" sticker). Beeps when powered.
-#       2. Passive Buzzer (Green circuit board on back exposed). Needs PWM to make notes.
+# Goal: Understand how sound is made by vibrating a membrane with electricity.
+#
+# WHY THIS MATTERS:
+# Sound is just air vibrating. By vibrating a buzzer at specific speeds, we 
+# can create "Notes." This is how your microwave beeps or your car's parking 
+# sensors work.
+#
+# PASSIVE VS ACTIVE:
+# 1. Active Buzzer: Like a siren. It has its own "brain" inside. Give it 
+#    power, and it screams at one constant volume and pitch.
+# 2. Passive Buzzer: Like a speaker. It is "dumb" and needs us to send a 
+#    vibrating signal (PWM) to make it do anything. This is what we use 
+#    to play songs!
 #
 # WIRING:
 # - Positive (+) -> GP15
 # - Negative (-) -> GND
-#
-# Skills Learnt:
-# - Passive vs Active Components
-# - Frequencies & Pitch
-# - Python Lists & Tuples
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# Setup the Buzzer pin as PWM (Pulse Width Modulation)
-# We use PWM to create sound waves (notes) for the Passive Buzzer.
+# --- Setup Pins ---
+# We use PWM to "vibrate" the pin. 
+# Think of it like a drummer hitting a drum 262 times a second to play a 'C' note.
 buzzer = machine.PWM(machine.Pin(15))
 
-def play_tone(frequency, duration):
+def play_note(frequency, duration):
     """
-    Plays a specific note (frequency) for a set time.
+    Plays a musical note.
+    - frequency: The "Pitch" (how high or low). Measured in Hz.
+    - duration: How long the note lasts in seconds.
     """
     if frequency == 0:
-        buzzer.duty_u16(0) # Logic for "Rest" (Silence)
+        # If frequency is 0, we set duty cycle to 0 (No power = Silence).
+        buzzer.duty_u16(0) 
     else:
-        buzzer.freq(frequency)  # Set pitch
-        buzzer.duty_u16(32768)  # Set volume (50% duty cycle is loudest)
+        # .freq() sets the speed of vibration.
+        buzzer.freq(frequency)  
+        
+        # .duty_u16 sets the volume. 
+        # 32768 is exactly half of 65535, which creates a perfect "Square Wave."
+        buzzer.duty_u16(32768)  
     
     time.sleep(duration)
-    buzzer.duty_u16(0) # Turn off after note is done
+    
+    # It is VERY IMPORTANT to turn the buzzer off (set duty to 0) 
+    # after the note ends, otherwise it will hum forever!
+    buzzer.duty_u16(0) 
 
-# --- Part 1: The Active Buzzer Test ---
-# If you have an Active Buzzer connected, this will just BEEP on/off.
-# If you have a Passive Buzzer, this will sound like specific notes.
-print("Playing Scale...")
-
-# Frequencies for notes (C4 to C5)
+# --- Musical Data (Dictionaries) ---
+# A dictionary maps a name (C4) to a value (262 Hz).
 notes = {
-    'C4': 262,
-    'D4': 294,
-    'E4': 330,
-    'F4': 349,
-    'G4': 392,
-    'A4': 440,
-    'B4': 494,
-    'C5': 523
+    'C4': 262, 'D4': 294, 'E4': 330, 'F4': 349,
+    'G4': 392, 'A4': 440, 'B4': 494, 'C5': 523
 }
 
-# Play a melody (Super Mario-ish theme intro)
+# --- The Melody (A Tuple List) ---
+# Each item is (NOTE_NAME, DURATION)
 melody = [
     ('E4', 0.15), ('E4', 0.15), ('Rest', 0.15), ('E4', 0.15), 
-    ('Rest', 0.15), ('C4', 0.15), ('E4', 0.3), ('G4', 0.3), ('Rest', 0.3)
+    ('Rest', 0.15), ('C4', 0.15), ('E4', 0.3), ('G4', 0.3)
 ]
 
-for note_name, duration in melody:
-    print(f"Playing {note_name}")
-    if note_name == 'Rest':
-        play_tone(0, duration)
-    else:
-        play_tone(notes[note_name], duration)
-    time.sleep(0.05) # Tiny gap between notes
+print("Playing melody... Can you guess the song?")
 
-print("Done!")
+for note_name, duration in melody:
+    print(f"Note: {note_name}")
+    if note_name == 'Rest':
+        play_note(0, duration)
+    else:
+        # We look up the note name in our 'notes' dictionary to get the Hz.
+        play_note(notes[note_name], duration)
+    
+    # A tiny gap between notes makes them sound more distinct.
+    time.sleep(0.05) 
+
+print("Done! You just programmed a digital instrument.")

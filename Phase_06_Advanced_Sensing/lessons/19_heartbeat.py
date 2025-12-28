@@ -2,37 +2,46 @@
 # Lesson 19: Bio-Metrics (Heartbeat Sensor)
 # -----------------------------------------------------------------------------
 # Module: KY-039 Heartbeat Sensor Module
-# Goal: Detect the pulse in your fingertip by measuring light absorption.
+# Goal: Use light to see the blood pumping inside your own body!
+#
+# WHY THIS MATTERS:
+# This is the same technology in an Apple Watch or a hospital finger-clip. 
+# It's called "Photoplethysmography" (PPG). It's a non-invasive way to check 
+# a person's health using nothing but an LED and a light sensor.
+#
+# HOW IT WORKS:
+# Blood absorbs IR light. When your heart beats, a "wave" of blood rushes 
+# into your finger, making it slightly more opaque. 
+# 1. The sensor shines light THROUGH your finger.
+# 2. When blood pulses, LESS light reaches the receiver.
+# 3. By measuring these tiny changes in light, we can count your heart rate!
 #
 # WIRING:
-# - S (Signal) -> GP26 (ADC0)
-# - middle (+) -> 3.3V
+# - S (Signal) -> GP26 (Analog Input 0)
+# - (Center)   -> 3.3V
 # - (-)        -> GND
-#
-# Skills Learnt:
-# - Analog Signal Processing
-# - Peak Detection Algorithms
-# - Filtering Noise from Data
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-# The Heartbeat sensor is very sensitive to noise! 
-# You must hold your finger STEADY on the sensor.
+# This sensor is extremely sensitive. Movement or external room lights 
+# can ruin the reading. Hold your finger very still!
 sensor = machine.ADC(machine.Pin(26))
 
-print("Place your finger gently on the sensor...")
-print("Reading Pulse Data... (Look for peaks)")
+print("System Active. Place your finger GENTLY over the LED and Receiver...")
+
+# --- Note on Noisy Data ---
+# In a professional medical device, we would use complex math (Digital 
+# Filters) to clean this data. For now, we are looking at the "Raw Wave."
 
 while True:
-    # Read the raw analog value
-    val = sensor.read_u16()
+    # Read the pulse intensity (0 to 65535)
+    pulse_value = sensor.read_u16()
     
-    # In a real project, we would use a "Rolling Average" or "High-pass Filter"
-    # For this lesson, we just print the raw value to see the wave.
-    print(val)
+    # We print the raw number. If you use a "Plotter," you will see a wave!
+    print(pulse_value)
     
-    # We poll fast to capture the heartbeat "spike"
+    # We check 100 times per second to catch the fast heart spike
     time.sleep(0.01)

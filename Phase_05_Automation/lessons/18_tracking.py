@@ -2,39 +2,45 @@
 # Lesson 18: Path Finder (Tracking Sensor)
 # -----------------------------------------------------------------------------
 # Module: KY-033 Tracking Sensor Module
-# Goal: Detect black lines on a white surface (or vice versa).
-#       This is the core of "Line Following" robots.
+# Goal: Build a sensor that can "read" a path on the floor.
+#
+# WHY THIS MATTERS:
+# This is how factory robots move parts around a warehouse. They follow a 
+# painted line on the floor. It's much cheaper and more reliable than 
+# using a camera or GPS!
+#
+# HOW IT WORKS (Absorption):
+# The sensor shoots IR light at the ground. 
+# - White Surfaces: Reflect the light back (Mirror effect).
+# - Black Lines:   Suck up the light (Absorption effect). 
+# By seeing where the light disappears, the robot knows exactly where the 
+# line is.
 #
 # WIRING:
-# - S (Signal) -> GP16
-# - + (Power)  -> 3.3V
+# - S (Signal) -> GP21 (Safe Pin)
+# - + (VCC)    -> 3.3V
 # - - (GND)    -> GND
-#
-# Skills Learnt:
-# - Infrared Reflection Thresholds
-# - Digital State Filtering
-# - Surface Property Detection
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-# 1 = Detecting white (Reflection received)
-# 0 = Detecting black (No reflection - infrared absorbed)
-sensor = machine.Pin(16, machine.Pin.IN)
+# The sensor is usually "Active Low" for lines.
+# - 1 = Light surface (Reflection)
+# - 0 = Dark line (Absorption)
+sensor = machine.Pin(21, machine.Pin.IN)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 
-print("Line Tracking Active. Move the sensor over a dark line!")
+print("System Active. Move the sensor eyes over a thick black marker line!")
 
 while True:
-    is_on_line = (sensor.value() == 0) # 0 often means "Line Detected"
-    
-    if is_on_line:
-        print("!! LINE DETECTED !!")
+    # Read the state of the reflection
+    if sensor.value() == 0:
+        print(">>> PATH DETECTED <<<")
         led.value(1)
     else:
         led.value(0)
         
-    time.sleep(0.1)
+    time.sleep(0.1) # Check 10 times per second

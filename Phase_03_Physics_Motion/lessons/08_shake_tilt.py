@@ -2,47 +2,52 @@
 # Lesson 08: Shake & Tilt (Physics Sensors)
 # -----------------------------------------------------------------------------
 # Modules: KY-002 (Vibration) / KY-020 (Tilt)
-# Goal: Detect physical movement.
-#       We will use the "Vibration Switch" (Spring inside) or "Tilt Switch" (Ball inside).
-#       They act just like buttons: 1 when shaken/tilted, 0 when still.
+# Goal: Detect physical motion using a mechanical switch.
+#
+# WHY THIS MATTERS:
+# This is how a car alarm knows if someone bumped the window, or how your 
+# washing machine knows if it's "off balance." It converts a physical 
+# shock into a digital signal.
+#
+# HOW IT WORKS:
+# Inside the Vibration sensor is a tiny, loose spring. When you bump it, 
+# the spring wobbles and touches a center pin, closing the circuit.
 #
 # WIRING:
-# - S (Signal) -> GP16
+# - S (Signal) -> GP21 (Safe Pin)
 # - - (GND)    -> GND
 # - + (Power)  -> 3.3V
-#
-# Skills Learnt:
-# - Digital Inputs
-# - Signal Debouncing
-# - High-Speed Polling
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-# The sensor acts like a button.
-# If it's unstable, we can use a PULL_UP or PULL_DOWN depending on the module.
-# Most KY-002 (Vibration) modules need PULL_UP.
-sensor = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
+# We use PULL_UP because these simple switches usually connect to GND 
+# when they vibrate. This keeps the pin at "1" until it is bumped.
+sensor = machine.Pin(21, machine.Pin.IN, machine.Pin.PULL_UP)
 
 led = machine.Pin("LED", machine.Pin.OUT)
 
-print("Waiting for movement...")
+print("System Active. Waiting for vibration/shake...")
 
-shake_count = 0
+move_count = 0
 
 while True:
-    # Read sensor
-    # Note: Vibration sensors create VERY short pulses (microseconds).
-    # A normal loop might miss them!
-    # But for now, let's try to catch it.
+    # --- High Speed Polling ---
+    # Unlike a button which you hold down, a vibration is a MICRO-SECOND event.
+    # If the Pico "sleeps" for even 0.01 seconds, it might miss the shock!
+    # So we run this loop as fast as the CPU can handle.
     
-    if sensor.value() == 0: # 0 means "Connected/Triggered" for most vibration switches
-        shake_count += 1
-        print(f"SHAKE DETECTED! ({shake_count})")
-        led.value(1) # Flash LED
-        time.sleep(0.1) # Debounce/Pause
+    if sensor.value() == 0: 
+        # 0 means the spring hit the center pin (Vibration occurred).
+        move_count += 1
+        print(f"BUMP DETECTED! Total: {move_count}")
+        
+        # Give the user visual feedback
+        led.value(1) 
+        time.sleep(0.1) # Debounce: Stop checking for 100ms so we don't count 1 bump as 50.
         led.value(0)
     
-    # No sleep in the 'else' block because we want to check as fast as possible!
+    # NOTICE: No 'time.sleep' here at the bottom. 
+    # We want to "listen" with 100% focus.

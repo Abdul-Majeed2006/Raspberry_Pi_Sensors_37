@@ -2,42 +2,45 @@
 # Lesson 14: Heavy Lifting (The Relay)
 # -----------------------------------------------------------------------------
 # Module: KY-019 Relay Module
-# Goal: Control high-power devices physically.
-#       A "Relay" is a mechanical switch controlled by a magnet.
-#       You will HEAR it "Click" when it turns on.
+# Goal: Use a tiny signal from the Pico to control a large physical switch.
+#
+# WHY THIS MATTERS:
+# Your Pico can only output a tiny bit of power (3.3V). You can't plug a lamp 
+# or a motor directly into it! A Relay acts like a middleman: the Pico 
+# flips the relay, and the relay flips the heavy power.
+#
+# HOW IT WORKS:
+# Inside the relay is an electromagnet. When the Pico sends power, the 
+# magnet pulls a metal lever with a "CLICK!" that completes a separate 
+# circuit.
 #
 # WIRING:
-# - S (Signal) -> GP16
-# - + (Power)  -> 3.3V (or 5V if your module requires it)
+# - S (Signal) -> GP15 (Safe Pin)
+# - + (VCC)    -> 3.3V 
 # - - (GND)    -> GND
-#
-# RELAY PORTS (The Blue Box):
-# - NC (Normally Closed): Connected when OFF.
-# - NO (Normally Open):   Connected when ON. (Most common used)
-# - COM (Common):         The wire you want to switch.
-#
-# Skills Learnt:
-# - Digital Outputs
-# - High Voltage Control Logic
-# - Normally Open (NO) vs Normally Closed (NC)
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
 # --- Setup Pins ---
-# The Relay is just a big digital switch.
-# Some relays are "Active LOW" (ON when 0).
-# Some are "Active HIGH" (ON when 1).
-relay = machine.Pin(16, machine.Pin.OUT)
+# The Relay is a Digital Output. 
+relay = machine.Pin(15, machine.Pin.OUT)
 
-print("Cycling the Relay...")
+print("System Active. Listen for the physical 'CLICK' of the relay!")
+
+# --- The Blue Screw Block (Terminology) ---
+# NO (Normally Open): The circuit is BROKEN when the relay is off.
+# NC (Normally Closed): The circuit is CONNECTED when the relay is off.
+# COM (Common): The moving part of the switch.
 
 while True:
-    print("Relay ON (Click!)")
-    relay.value(1) # Try 0 if this doesn't click
-    time.sleep(2)
+    # 1. Flip the switch ON
+    print(">>> RELAY ON  (Internal Magnet Active)")
+    relay.value(1) 
+    time.sleep(2) # Keep it on for 2 seconds
     
-    print("Relay OFF")
-    relay.value(0) # Try 1 if this doesn't click
+    # 2. Flip the switch OFF
+    print("<<< RELAY OFF (Spring pulls it back)")
+    relay.value(0) 
     time.sleep(2)
