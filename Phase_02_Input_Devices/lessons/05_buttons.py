@@ -2,58 +2,60 @@
 # Lesson 05: The Power of Inputs (Buttons & Touch)
 # -----------------------------------------------------------------------------
 # Modules: KY-004 Button / KY-036 Metal Touch
-# Goal: Detect physical contact using both a mechanical switch and a sensor.
+# Goal: Master both "On/Off" (Digital) and "How Much" (Analog) detection.
 #
 # WHY THIS MATTERS:
-# Every interaction you have with a machine (Keyboard, Mouse, Phone screen) 
-# starts with an "Input." Learning to read a button correctly is the 
-# first step in building an interactive device.
+# - Digital (DO): Tells you IF someone is touching the sensor (Yes/No).
+# - Analog (AO): Tells you HOW INTENSE the touch is (Static discharge strength).
 #
-# PULL-DOWN RESISTORS:
-# Imagine a pin is like a "Floating" antenna. If it's not connected to 
-# anything, it picks up static electricity from the air and might say 
-# "1" or "0" randomly. 
-# We use a "Pull-Down" to tie the pin to Ground (0) so it stays at 0 
-# until someone pushes a button to force it to 3.3V (1).
+# WIRING (Clustered Standard):
+# [KY-004 Button]
+# - S -> GP16 (Digital In)
+# - - -> GND (Wait for PULL_UP logic)
 #
-# WIRING:
-# - Button S  -> GP16 (Master Pin)
-# - Touch S   -> GP17 (Nearby Neighbor)
-# - All GND   -> GND
-# - All +     -> 3.3V
+# [KY-036 Metal Touch]
+# - G -> GND
+# - + -> 3.3V
+# - DO -> GP17 (Digital In)
+# - AO -> GP26 (Analog In/ADC0)
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins ---
-# We use PULL_DOWN to ensure safety and stability.
-# We cluster these on GP16 and GP17 for clean wiring.
-button = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_DOWN)
-touch_sensor = machine.Pin(17, machine.Pin.IN, machine.Pin.PULL_DOWN)
+# --- Setup Digital Inputs ---
+# We use PULL_UP because most physical buttons 
+# connect to Ground (0) when pressed.
+# 1 = IDLE | 0 = PRESSED
+button = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
+touch_digital = machine.Pin(17, machine.Pin.IN, machine.Pin.PULL_UP)
 
-# The onboard LED acts as our "Success" indicator.
+# --- Setup Analog Input ---
+touch_analog = machine.ADC(machine.Pin(26))
+
+# Onboard LED
 led = machine.Pin("LED", machine.Pin.OUT)
 
-print("Ready! Press the Button or touch the point.")
+print("--- INPUT DIAGNOSTIC ACTIVE ---")
+print("Press a button and watch the numbers change.")
 
 while True:
-    # .value() reads the voltage. 
-    # High Voltage (3.3V) = 1
-    # Low Voltage (0V)   = 0
-    btn_pushed = button.value()
-    sensor_touched = touch_sensor.value()
+    # 1. Read Raw States
+    btn_raw = button.value()
+    touch_raw = touch_digital.value()
+    intensity = touch_analog.read_u16()
     
-    # --- Boolean Logic (The 'OR' Gate) ---
-    # We want the LED to turn on if EITHER one is activated.
-    # In coding, 'or' allows us to combine multiple conditions.
-    if btn_pushed == 1 or sensor_touched == 1:
-        print("INPUT DETECTED!")
-        led.value(1) # Send 3.3V to the LED
+    # 2. Print Diagnostic (See what the Pico 'feels')
+    print(f"Pin Values: Button={btn_raw} | Touch={touch_raw} | Analog={intensity}")
+    
+    # --- Logic (PULL_UP = 0 when pressed) ---
+    if btn_raw == 0:
+        print(">> BUTTON DETECTED")
+        led.value(1)
+    elif touch_raw == 0:
+        print(">> TOUCH DETECTED")
+        led.value(1)
     else:
-        led.value(0) # Send 0V to the LED
-        
-    # --- Debouncing ---
-    # Metal contacts 'bounce' physically when they hit. 
-    # A tiny delay helps ignore these microscopic bounces.
-    time.sleep(0.05) 
+        led.value(0)
+    
+    time.sleep(0.1) 

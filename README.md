@@ -26,7 +26,7 @@ Learn to control the world.
 
 Learn to listen to the user.
 
-* **L05:** Buttons & Touch Sensors (Digital Inputs)
+* **L05:** Buttons & Touch Sensors (Analog & Digital)
 * **L06:** Joysticks (Analog Inputs & ADCs)
 * **L07:** Rotary Encoders (Quadrature Logic)
 * 🏆 **Capstone Project 2:** The Digital Safe Cracker
