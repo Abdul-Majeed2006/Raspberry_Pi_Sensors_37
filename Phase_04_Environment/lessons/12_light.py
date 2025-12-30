@@ -1,53 +1,55 @@
 # -----------------------------------------------------------------------------
-# Lesson 12: Night Vision (Light Sensors)
+# Lesson 12: Digital vs Analog (The Duel)
 # -----------------------------------------------------------------------------
 # Module: KY-018 Photoresistor Module
-# Goal: Detect the brightness of the room and build an "Auto-Night-Light."
+# Goal: Compare Software Logic (ADC) vs Hardware Logic (Comparator).
 #
-# WHY THIS MATTERS:
-# This is how streetlights know when to turn on at sunset, and how your 
-# phone screen knows to dim itself when you're in a dark room. 
-# It's all about saving power and human convenience!
+# THE MODULE ADVANTAGE:
+# Anyone can buy a raw photoresistor. But this module has a "Comparator Chip"
+# (LM393) and a Blue Dial (Potentiometer).
 #
-# HOW IT WORKS:
-# The sensor is an "LDR" (Light Dependent Resistor). 
-# Photons (light particles) hit the sensor and "kick" electrons loose, 
-# making it easier for electricity to flow.
-# - Bright Light = Low Resistance (High Voltage)
-# - Darkness     = High Resistance (Low Voltage)
+# - ANALOG (A0): Gives us the exact brightness (0-65535).
+# - DIGITAL (D0): Gives us a simple 1 or 0 based on the Blue Dial.
+#
+# HARDWARE TUNING:
+# You can use a screwdriver to change the sensitivity of D0 without writing
+# a single line of code!
 #
 # WIRING:
-# - S (Signal) -> GP26 (Analog Input 0)
-# - (Center)   -> 3.3V
-# - (-)        -> GND
+# - A0 (Analog)  -> GP26
+# - D0 (Digital) -> GP16
+# - (+)          -> 3.3V
+# - (-)          -> GND
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins ---
-# We use ADC because light isn't just ON or OFF; it has many levels.
-light_sensor = machine.ADC(machine.Pin(26))
-
-# The onboard LED acts as our "Streetlight"
+# --- PINS ---
+analog_pin = machine.ADC(26)
+digital_pin = machine.Pin(16, machine.Pin.IN)
 led = machine.Pin("LED", machine.Pin.OUT)
 
-print("System Active. Cover the sensor with your hand to see it react!")
+print("--- HARDWARE VS SOFTWARE DUEL ---")
+print("Adjust the Blue Dial to set the trigger point for D0!")
 
 while True:
-    # 1. Read the Brightness (0 to 65535)
-    brightness = light_sensor.read_u16()
+    # 1. Read Both Worlds
+    soft_val = analog_pin.read_u16()
+    hard_val = digital_pin.value()
     
-    # 2. Display the value
-    # Tip: Use this printed number to find the perfect "Darkness" threshold!
-    print(f"Current Light Level: {brightness}")
+    # 2. Logic Comparison
+    # Software: We decide the threshold in code (e.g. < 20000)
+    # Hardware: The Blue Dial decides the threshold physically
     
-    # 3. Night-Light Logic
-    # Threshold: If brightness drops below 15,000, we consider it "Dark."
-    if brightness < 15000:
-        print(">>> STATUS: DARK (Lights ON)")
-        led.value(1)
-    else:
-        led.value(0)
-        
-    time.sleep(0.5) # Check twice per second
+    status = "DARK" if hard_val == 1 else "LIGHT"
+    
+    # KY-018 Logic: D0 goes HIGH (1) when it crosses the threshold (Darkness)
+    # Note: Some modules are inverted. Check yours!
+    
+    print(f"Analog: {soft_val} | Digital: {hard_val} ({status})")
+    
+    # 3. The LED follows the Hardware (D0)
+    led.value(hard_val)
+    
+    time.sleep(0.2)

@@ -2,62 +2,76 @@
 # Lesson 06: Analog Control (The Joystick)
 # -----------------------------------------------------------------------------
 # Module: KY-023 Joystick Module
-# Goal: Understand the difference between Digital (Pulse) and Analog (Smooth).
+# Goal: Accurate 2-Axis control with Deadzones.
 #
-# WHY THIS MATTERS:
-# A button is like a light switch (ON/OFF). A joystick is like a steering 
-# wheel or a gas pedal—it has many levels of intensity.
-#
-# HOW IT WORKS (The ADC):
-# The Pico has an "Analog to Digital Converter" (ADC). It measures the 
-# voltage on a pin and turns it into a number. 
-# - 0 Volts       = 0
-# - 3.3 Volts     = 65535
+# ANATOMY:
+# A Joystick is just two Potentiometers (X and Y) and a Button.
+# Center ~ 32768 (Half of 65535).
 #
 # WIRING:
-# - GND   -> GND
-# - +5V   -> 3.3V (The Pico uses 3.3V logic!)
-# - VRx   -> GP26 (Analog Input 0)
-# - VRy   -> GP27 (Analog Input 1)
-# - SW    -> GP18 (Button)
+# - GND -> GND
+# - +5V -> 3.3V (The Pico uses 3.3V logic!)
+# - VRx -> GP26 (ADC0)
+# - VRy -> GP27 (ADC1)
+# - SW  -> GP16 (Use PULL_UP)
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins (The ADC Class) ---
-# We use the ADC class to "measure" the voltage on the pins.
-# These are physically clustered on the right side.
-joy_x = machine.ADC(machine.Pin(26))
-joy_y = machine.ADC(machine.Pin(27))
-
-# The switch is a digital button. 
-# We use GP18 (Pin 24) which is right across from the Analog pins.
-joy_btn = machine.Pin(18, machine.Pin.IN, machine.Pin.PULL_UP)
-
-print("Starting Joystick... Move it around!")
-
-while True:
-    # --- Reading Analog Values ---
-    # .read_u16() reads the voltage and returns its 16-bit number (0-65535).
-    # Since the stick is held by springs, the "Center" is usually near 32768.
-    x_val = joy_x.read_u16()
-    y_val = joy_y.read_u16()
+class HardwareConfig:
+    PIN_X = 26
+    PIN_Y = 27
+    PIN_SW = 16
     
-    # Read Button (Returns 1 if up, 0 if pushed down)
-    btn_pushed = (joy_btn.value() == 0)
+    # Calibration Constants
+    CENTER = 32768
+    DEADZONE = 5000  # Ignore small jitters around the center
+    THRESHOLD_LOW = 10000
+    THRESHOLD_HIGH = 50000
+
+def get_direction(val):
+    """Helper to convert analog value to direction."""
+    if val < HardwareConfig.THRESHOLD_LOW:
+        return -1 # Left/Up
+    elif val > HardwareConfig.THRESHOLD_HIGH:
+        return 1  # Right/Down
+    else:
+        return 0  # Center
+
+def main():
+    # 1. Setup Inputs
+    joy_x = machine.ADC(HardwareConfig.PIN_X)
+    joy_y = machine.ADC(HardwareConfig.PIN_Y)
+    joy_btn = machine.Pin(HardwareConfig.PIN_SW, machine.Pin.IN, machine.Pin.PULL_UP)
     
-    # --- Threshold Logic ---
-    # We use "If" statements to turn numbers into directions.
-    # If the number is very high or very low, we know which way it's leaning.
-    direction = "Center"
-    if y_val < 10000: direction = "UP"
-    elif y_val > 50000: direction = "DOWN"
-    elif x_val < 10000: direction = "LEFT"
-    elif x_val > 50000: direction = "RIGHT"
+    print("--- JOYSTICK CALIBRATION READY ---")
+    
+    while True:
+        # 2. Read Sensors
+        raw_x = joy_x.read_u16()
+        raw_y = joy_y.read_u16()
+        is_pressed = not joy_btn.value() # Active Low
         
-    # Build a nice display string
-    btn_text = "[CLICK]" if btn_pushed else "       "
-    print(f"{btn_text} X: {x_val:5d} | Y: {y_val:5d} | Direction: {direction}")
-    
-    time.sleep(0.1)
+        # 3. Process Logic (Deadzones are handled by the threshold check)
+        dir_x_val = get_direction(raw_x)
+        dir_y_val = get_direction(raw_y)
+        
+        # Decode X
+        if dir_x_val == -1: dir_x = "LEFT "
+        elif dir_x_val == 1: dir_x = "RIGHT"
+        else: dir_x = "-----"
+        
+        # Decode Y
+        if dir_y_val == -1: dir_y = "UP   "
+        elif dir_y_val == 1: dir_y = "DOWN "
+        else: dir_y = "-----"
+        
+        # 4. Display
+        btn_status = "[X]" if is_pressed else "[ ]"
+        print(f"{btn_status} X: {raw_x:05d} ({dir_x}) | Y: {raw_y:05d} ({dir_y})")
+        
+        time.sleep(0.1)
+
+if __name__ == "__main__":
+    main()

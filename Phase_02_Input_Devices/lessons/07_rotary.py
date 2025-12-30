@@ -2,70 +2,72 @@
 # Lesson 07: Spinning Control (Rotary Encoder)
 # -----------------------------------------------------------------------------
 # Module: KY-040 Rotary Encoder Module
-# Goal: Detect the direction and speed of a spinning knob.
+# Goal: Precise rotational tracking using Quadrature Encoding.
 #
-# WHY THIS MATTERS:
-# Unlike a Volume Knob in an old car (which stops at a certain point), a 
-# Rotary Encoder spins forever. It's used on modern stereos, 3D printers, 
-# and digital cameras to scroll through menus.
-#
-# HOW IT WORKS (Quadrature Encoding):
-# Inside are two switches (CLK and DT). When you spin, they click on and off 
-# but one is slightly behind the other. 
-# - If CLK clicks FIRST, you are spinning RIGHT.
-# - If DT clicks FIRST, you are spinning LEFT.
+# ANATOMY:
+# A Rotary Encoder sends two square waves (Griffith & Gray Code).
+# By detecting WHICH pin changed first, we know the direction.
 #
 # WIRING:
 # - GND -> GND
 # - +   -> 3.3V
-# - DT  -> GP17 (Data pin)
-# - CLK -> GP16 (Clock pin)
+# - DT  -> GP17 (Data)
+# - CLK -> GP16 (Clock)
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins ---
-# We use GP16 and GP17 (Pins 21/22) because they are physically adjacent.
-# This makes the encoder cables very easy to manage.
-dt_pin = machine.Pin(17, machine.Pin.IN)
-clk_pin = machine.Pin(16, machine.Pin.IN)
+class HardwareConfig:
+    PIN_CLK = 16
+    PIN_DT  = 17
 
-# We store the previous state so we can tell when the knob moves.
-previous_value = True
-counter = 0
+# --- Global State (Required for Interrupts) ---
+# We store these outside the function because the IRQ needs to access them fast.
+encoder_count = 0
+last_clk_state = 0
 
-def update_encoder():
+def on_rotate(pin):
     """
-    Checks if the knob has moved and updates the counter.
+    Interrupt Handler (IRQ). 
+    This function runs AUTOMATICALLY whenever the CLK pin changes.
     """
-    global previous_value, counter
+    global encoder_count, last_clk_state
     
-    # Read the current state of the CLK pin
-    current_value = clk_pin.value()
+    # 1. Read the new state
+    current_clk = clk_pin.value()
+    current_dt = dt_pin.value()
     
-    # If the pin state CHANGED (e.g. from 1 to 0), the knob moved!
-    if current_value != previous_value:
-        
-        # Now we check the DT pin to see which way it's spinning.
-        # This is the "Magic" of encoders: comparing the two pins.
-        if dt_pin.value() != current_value:
-            # Spinning Clockwise
-            counter += 1
-            print(">>> CLOCKWISE [", counter, "]")
+    # 2. Key Logic: If CLK changed, check DT to find direction
+    if current_clk != last_clk_state:
+        if current_dt != current_clk:
+            # Clockwise
+            encoder_count += 1
+            print(f">>> CW  [{encoder_count}]")
         else:
-            # Spinning Counter-Clockwise
-            counter -= 1
-            print("<<< COUNTER-CLOCKWISE [", counter, "]")
+            # Counter-Clockwise
+            encoder_count -= 1
+            print(f"<<< CCW [{encoder_count}]")
             
-    # Save the current value for the next check
-    previous_value = current_value
+    # 3. Update State
+    last_clk_state = current_clk
 
-print("System Ready. Start spinning the knob!")
+# --- Setup ---
+clk_pin = machine.Pin(HardwareConfig.PIN_CLK, machine.Pin.IN)
+dt_pin = machine.Pin(HardwareConfig.PIN_DT, machine.Pin.IN)
 
-# --- The High Speed Loop ---
+# Initialize state
+last_clk_state = clk_pin.value()
+
+# --- Attach Interrupt ---
+# Instead of a "While True" loop checking 1000 times a second, 
+# we tell the CPU: "Wake up and run 'on_rotate' ONLY when the pin changes."
+clk_pin.irq(trigger=machine.Pin.IRQ_CHANGE, handler=on_rotate)
+
+print("--- ENCODER ACTIVE (IRQ MODE) ---")
+print("Spin the knob. The main loop does NOTHING!")
+
 while True:
-    # We call our function as fast as possible. 
-    # If we add a time.sleep() here, we might MISS a pulse while the 
-    # computer is sleeping!
-    update_encoder()
+    # Proof that the main loop is free to do other things
+    # You could run a whole game here, and the encoder would still work!
+    time.sleep(1)
