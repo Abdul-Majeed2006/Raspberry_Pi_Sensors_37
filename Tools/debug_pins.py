@@ -1,34 +1,40 @@
+# -----------------------------------------------------------------------------
+# Tool: Diagnostic Cycler
+# -----------------------------------------------------------------------------
+# Goal: Cycle through pins one by one to verify wiring order.
+# Why:  If you wired GP16 to the LED but the code triggers GP17, valid
+#       hardware will look broken. This test confirms PHYSICAL wiring.
+# -----------------------------------------------------------------------------
+
 import machine
 import time
 
-# --- HARDWARE CONFIGURATION ---
-# We test the "Bottom-Right Cluster" (GP16, 17, 18) and ADC block (26, 27).
-PINS_TO_TEST = [16, 17, 18, 26, 27]
+class HardwareConfig:
+    TEST_CLUSTER = [16, 17, 18, 26, 27]
+    CYCLE_SPEED = 1.0
 
-print("========================================")
-print("     CLUSTERED WIRING DIAGNOSTIC")
-print("========================================")
-print(f"Testing Pins: {PINS_TO_TEST}")
-print("Instructions:")
-print("1. We are testing the Bottom-Right block of the Pico.")
-print("2. If the component DOES NOT turn on, that pin might be 'dead' or broken.")
-print("3. In that case, you must change the pin number in YOUR code to a working one.")
-print("----------------------------------------\n")
-
-for p in PINS_TO_TEST:
-    print(f"--> NOW TESTING: GP{p}")
-    try:
-        test_pin = machine.Pin(p, machine.Pin.OUT)
+def main():
+    print("========================================")
+    print("     CLUSTERED WIRING DIAGNOSTIC")
+    print("========================================")
+    
+    while True:
+        for pin_id in HardwareConfig.TEST_CLUSTER:
+            print(f"--> TESTING: GP{pin_id} ...")
+            try:
+                # Turn ON
+                p = machine.Pin(pin_id, machine.Pin.OUT)
+                p.value(1)
+                time.sleep(HardwareConfig.CYCLE_SPEED)
+                
+                # Turn OFF
+                p.value(0)
+                time.sleep(0.2)
+                
+            except Exception as e:
+                print(f"    ERROR: {e}")
         
-        print(f"    GP{p} set to HIGH (ON)")
-        test_pin.value(1)
-        time.sleep(2)
-        
-        print(f"    GP{p} set to LOW (OFF)")
-        test_pin.value(0)
-        time.sleep(1)
-    except Exception as e:
-        print(f"    Error testing GP{p}: {e}")
+        print("\n--- Cycle Complete (Restarting) ---\n")
 
-print("\nDIAGNOSTIC COMPLETE.")
-print("Did it work? If not, check your breadboard alignment first!")
+if __name__ == "__main__":
+    main()
