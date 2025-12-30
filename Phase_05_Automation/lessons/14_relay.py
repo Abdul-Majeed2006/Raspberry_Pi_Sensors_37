@@ -2,45 +2,44 @@
 # Lesson 14: Heavy Lifting (The Relay)
 # -----------------------------------------------------------------------------
 # Module: KY-019 Relay Module
-# Goal: Use a tiny signal from the Pico to control a large physical switch.
+# Goal: Control high-power circuits (like a lamp or fan) safely.
 #
-# WHY THIS MATTERS:
-# Your Pico can only output a tiny bit of power (3.3V). You can't plug a lamp 
-# or a motor directly into it! A Relay acts like a middleman: the Pico 
-# flips the relay, and the relay flips the heavy power.
-#
-# HOW IT WORKS:
-# Inside the relay is an electromagnet. When the Pico sends power, the 
-# magnet pulls a metal lever with a "CLICK!" that completes a separate 
-# circuit.
+# ANATOMY:
+# A Relay is an electromagnet that pulls a physical metal switch.
+# - NO (Normally Open): Disconnected until you turn it ON.
+# - NC (Normally Closed): Connected until you turn it OFF.
+# - click! : The sound of the magnet moving the switch.
 #
 # WIRING:
 # - S (Signal) -> GP16
-# - + (VCC)    -> 3.3V 
+# - + (VCC)    -> 3.3V
 # - - (GND)    -> GND
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins ---
-# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
-relay = machine.Pin(16, machine.Pin.OUT)
+class HardwareConfig:
+    PIN_RELAY = 16
+    CYCLE_TIME_SEC = 2.0
 
-print("System Active. Listen for the physical 'CLICK' of the relay!")
-
-# --- The Blue Screw Block (Terminology) ---
-# NO (Normally Open): The circuit is BROKEN when the relay is off.
-# NC (Normally Closed): The circuit is CONNECTED when the relay is off.
-# COM (Common): The moving part of the switch.
-
-while True:
-    # 1. Flip the switch ON
-    print(">>> RELAY ON  (Internal Magnet Active)")
-    relay.value(1) 
-    time.sleep(2) # Keep it on for 2 seconds
+def main():
+    # 1. Setup Output
+    relay_switch = machine.Pin(HardwareConfig.PIN_RELAY, machine.Pin.OUT)
     
-    # 2. Flip the switch OFF
-    print("<<< RELAY OFF (Spring pulls it back)")
-    relay.value(0) 
-    time.sleep(2)
+    print("--- SYSTEM READY: HIGH POWER RELAY ---")
+    print("Listen for the click...")
+    
+    while True:
+        # A. Turn ON
+        print(">>> RELAY CLOSED (ON)")
+        relay_switch.value(1)
+        time.sleep(HardwareConfig.CYCLE_TIME_SEC)
+        
+        # B. Turn OFF
+        print("<<< RELAY OPEN   (OFF)")
+        relay_switch.value(0)
+        time.sleep(HardwareConfig.CYCLE_TIME_SEC)
+
+if __name__ == "__main__":
+    main()

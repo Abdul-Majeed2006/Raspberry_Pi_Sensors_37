@@ -2,54 +2,52 @@
 # Lesson 02: Magic Light Cup (Tilt Switch)
 # -----------------------------------------------------------------------------
 # Module: KY-027 Magic Light Cup Module
-# Goal: Detect gravity and dim an LED based on tilt orientation.
+# Goal: Detect gravity/tilt.
 #
-# WHY THIS MATTERS:
-# This is how your smartphone knows to rotate the screen when you turn it 
-# sideways! This "Magic Cup" is a simplified version of a Motion Sensor.
-#
-# HOW IT WORKS:
-# Inside the glass tube is a tiny metal ball (or mercury). When you tilt it, 
-# the ball rolls onto two wires, completing a circuit like a button press.
+# ANATOMY:
+# A mercury tilt switch behaves like a button. 
+# Tilted = Circuit Closed (1). Upright = Open (0).
 #
 # WIRING:
 # - G (Ground) -> GND
 # - + (Power)  -> 3.3V
-# - S (Signal) -> GP16 (Reads the tilt)
-# - L (LED)    -> GP17 (Controls the light)
+# - S (Signal) -> GP16 (Digital Input)
+# - L (LED)    -> GP17 (Digital Output)
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins ---
-# The Tilt Switch is an INPUT. The Pico "listens" to this pin.
-# We use GP16 as our primary "Master" pin for single-signal components.
-tilt_switch = machine.Pin(16, machine.Pin.IN)
+class HardwareConfig:
+    PIN_TILT = 16
+    PIN_LED  = 17
+    
+def main():
+    # 1. Setup Input
+    tilt_switch = machine.Pin(HardwareConfig.PIN_TILT, machine.Pin.IN)
+    
+    # 2. Setup Output (PWM for dimming capability)
+    led = machine.PWM(machine.Pin(HardwareConfig.PIN_LED))
+    led.freq(1000)
+    
+    print("--- SYSTEM READY: MAGIC CUP ---")
+    print("Tilt the module...")
+    
+    while True:
+        # A. Read Status
+        is_tilted = (tilt_switch.value() == 1)
+        
+        # B. React
+        if is_tilted:
+            # Full Brightness
+            print("Status: ACTIVATED")
+            led.duty_u16(65535)
+        else:
+            # Dim Glow (Standby)
+            print("Status: IDLE")
+            led.duty_u16(4000)
+            
+        time.sleep(0.1)
 
-# The LED is an OUTPUT. We use GP17 right next to it for the light.
-led = machine.PWM(machine.Pin(17))
-led.freq(1000)
-
-print("Tilt the module to see the 'Magic' happen!")
-
-while True:
-    # --- The Digital Input ---
-    # .value() returns a "Boolean" (True/1 or False/0).
-    # 1 means the ball is touching the contacts (Circuit Closed).
-    # 0 means the ball has rolled away (Circuit Open).
-    tilt_status = tilt_switch.value()
-
-    if tilt_status == 1:
-        # If tilted, set LED to 100% Power.
-        print("Status: ACTIVATED (Full Bright)")
-        led.duty_u16(65535) 
-    else:
-        # if not tilted, set LED to about 8% Power (Dim Glow).
-        print("Status: IDLE (Dim Glow)")
-        led.duty_u16(5000) 
-
-    # --- Polling Rate ---
-    # Running the loop too fast can make the terminal hard to read.
-    # 0.1 seconds (100ms) is perfect for human interaction.
-    time.sleep(0.1) 
+if __name__ == "__main__":
+    main()

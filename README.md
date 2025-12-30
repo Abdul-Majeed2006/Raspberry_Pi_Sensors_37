@@ -107,11 +107,12 @@ Diagnostic scripts to test your Pico and sensors.
 
 ## ⚠️ Legal & Licensing
 
-**© Copyright 2024-2025. All Rights Reserved.**
+**© Copyright 2025 Abdul-Majeed Babangida Zakari. All Rights Reserved.**
 
-This curriculum is **Proprietary Intellectual Property**.
+This curriculum is **Open Source (MIT License)**.
+Build fearlessly, but responsibly.
 
-* **[LICENSE](LICENSE):** Usage terms. Strict "No Redistribution" policy.
-* **[LEGAL NOTICE](LEGAL_NOTICE.md):** Liability disclaimer and safety warnings.
+* **[LICENSE](LICENSE):** MIT License (Free to use, modify, and distribute).
+* **[DISCLAIMER](DISCLAIMER.md):** Safety warnings (Lasers, Fire, Electricity).
 
-By using this code, you agree that the Author is not liable for any hardware damage or personal injury. **Always use safety glasses when working with Lasers or heavy machinery.**
+**Always use safety glasses when working with Lasers or heavy machinery.**

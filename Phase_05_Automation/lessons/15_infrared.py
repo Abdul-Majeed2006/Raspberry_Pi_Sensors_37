@@ -1,50 +1,54 @@
 # -----------------------------------------------------------------------------
-# Lesson 15: Invisible Tripwire (Infrared Beam)
+# Lesson 15: Invisible Tripwire (IR Break-Beam)
 # -----------------------------------------------------------------------------
-# Modules: KY-005 IR Transmitter / KY-022 IR Receiver
-# Goal: Build an invisible security beam that triggers when someone walks through.
+# Modules: KY-005 IR LED (TX) / KY-022 IR Receiver (RX)
+# Goal: Create an active security beam.
 #
-# WHY THIS MATTERS:
-# This is how your TV remote works, and how automatic garage doors know if 
-# a car (or a cat) is in the way before they close. It's a "Wireless Wire."
-#
-# HOW IT WORKS (The 38kHz Secret):
-# The sun emits IR light too. To stop the sun from scale-triggering our 
-# alarm, the receiver ONLY looks for light flashing at exactly 38,000Hz 
-# (38,000 times per second). This is called "Modulation."
+# ANATOMY:
+# - TX: Flashes IR light at 38,000 Hz (38kHz).
+# - RX: Specific sensor that ONLY sees 38kHz light (ignores the sun).
 #
 # WIRING:
-# 1. Transmitter: S -> GP17, - -> GND
-# 2. Receiver:    S -> GP16, + -> 3.3V, - -> GND
+# 1. Transmitter (TX): S -> GP17 | - -> GND
+# 2. Receiver (RX):    S -> GP16 | + -> 3.3V | - -> GND
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Transmitter (The "Light Bulb") ---
-# We use GP17 for the transmitter.
-transmitter = machine.PWM(machine.Pin(17))
-transmitter.freq(38000)
-transmitter.duty_u16(32768) # 50% duty cycle
+class HardwareConfig:
+    PIN_TX_LED = 17
+    PIN_RX_EYE = 16
+    PIN_ALARM  = "LED"
+    CARRIER_FREQ = 38000 # 38kHz Standard for IR
 
-# --- Setup Receiver (The "Eye") ---
-# We use GP16 (Pin 21) right next to it for the receiver 'Eye'.
-receiver = machine.Pin(16, machine.Pin.IN)
-
-led = machine.Pin("LED", machine.Pin.OUT)
-
-print("Security System Online. Try to block the invisible beam!")
-
-while True:
-    # Read the eye
-    beam_broken = receiver.value()
+def main():
+    # 1. Setup Transmitter (Always ON)
+    tx = machine.PWM(machine.Pin(HardwareConfig.PIN_TX_LED))
+    tx.freq(HardwareConfig.CARRIER_FREQ)
+    tx.duty_u16(32768) # 50% Duty Cycle (Perfect Square Wave)
     
-    if beam_broken == 1:
-        # If the beam is broken, the 'Eye' goes High (1)
-        print(">>> ALERT: INTRUDER DETECTED <<<")
-        led.value(1) 
-    else:
-        # Beam is solid, everything is fine.
-        led.value(0)
+    # 2. Setup Receiver
+    rx = machine.Pin(HardwareConfig.PIN_RX_EYE, machine.Pin.IN)
+    
+    # 3. Setup Alarm
+    alarm = machine.Pin(HardwareConfig.PIN_ALARM, machine.Pin.OUT)
+    
+    print("--- SYSTEM READY: SECURITY BEAM ---")
+    print("Break the beam to trigger alarm...")
+    
+    while True:
+        # RX Logic: 0 = Seeing 38kHz Signal (Beam Intact)
+        #           1 = Signal Lost (Beam Broken)
+        is_beam_broken = (rx.value() == 1)
         
-    time.sleep(0.1) # Check 10 times per second
+        if is_beam_broken:
+            print("!!! BREACH DETECTED !!!")
+            alarm.value(1)
+        else:
+            alarm.value(0)
+            
+        time.sleep(0.1)
+
+if __name__ == "__main__":
+    main()

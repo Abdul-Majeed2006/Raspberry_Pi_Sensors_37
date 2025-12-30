@@ -1,6 +1,6 @@
 # 37-in-1 Sensor Kit Inventory & Mapping
 
-This document tracks every module in your kit and where it is utilized in the **Zero to Hero** curriculum.
+This document tracks every module in your kit and where it is utilized in the **Raspberry Pi Mastery** curriculum.
 
 | Module | Name | Status | Lesson / Usage |
 | :--- | :--- | :--- | :--- |

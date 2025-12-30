@@ -1,47 +1,58 @@
 # -----------------------------------------------------------------------------
-# Lesson 19: Bio-Metrics (Heartbeat Sensor)
+# Lesson 19: The Pulse (Heartbeat Sensor)
 # -----------------------------------------------------------------------------
-# Module: KY-039 Heartbeat Sensor Module
-# Goal: Use light to see the blood pumping inside your own body!
+# Module: KY-039 Finger Heartbeat Sensor
+# Goal: Detect the faint blood flow changes in your fingertip.
 #
-# WHY THIS MATTERS:
-# This is the same technology in an Apple Watch or a hospital finger-clip. 
-# It's called "Photoplethysmography" (PPG). It's a non-invasive way to check 
-# a person's health using nothing but an LED and a light sensor.
-#
-# HOW IT WORKS:
-# Blood absorbs IR light. When your heart beats, a "wave" of blood rushes 
-# into your finger, making it slightly more opaque. 
-# 1. The sensor shines light THROUGH your finger.
-# 2. When blood pulses, LESS light reaches the receiver.
-# 3. By measuring these tiny changes in light, we can count your heart rate!
+# ANATOMY:
+# This sensor is just an IR LED and a Photo-Transistor. 
+# When your heart pumps, blood fills your finger, which blocks slightly more 
+# light. The sensor sees this tiny dip in brightness.
 #
 # WIRING:
-# - S (Signal) -> GP26 (Analog Input 0)
-# - (Center)   -> 3.3V
-# - (-)        -> GND
+# - S (Signal) -> GP26 (ADC)
+# - + (Power)  -> 3.3V
+# - - (GND)    -> GND
+# *Note: This is a very noisy sensor. Don't expect medical grade precision!
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins ---
-# This sensor is extremely sensitive. Movement or external room lights 
-# can ruin the reading. Hold your finger very still!
-sensor = machine.ADC(machine.Pin(26))
-
-print("System Active. Place your finger GENTLY over the LED and Receiver...")
-
-# --- Note on Noisy Data ---
-# In a professional medical device, we would use complex math (Digital 
-# Filters) to clean this data. For now, we are looking at the "Raw Wave."
-
-while True:
-    # Read the pulse intensity (0 to 65535)
-    pulse_value = sensor.read_u16()
+class HardwareConfig:
+    PIN_SENSOR = 26
+    PIN_BEAT_LED = "LED"
     
-    # We print the raw number. If you use a "Plotter," you will see a wave!
-    print(pulse_value)
+    # Thresholding is hard with this sensor because it depends on your finger size.
+    # We use a "Dynamic Threshold" (Detecting rapid changes).
+    SENSITIVITY = 500
+
+def main():
+    sensor = machine.ADC(HardwareConfig.PIN_SENSOR)
+    beat_led = machine.Pin(HardwareConfig.PIN_BEAT_LED, machine.Pin.OUT)
     
-    # We check 100 times per second to catch the fast heart spike
-    time.sleep(0.01)
+    print("--- SYSTEM READY: HEART MONITOR ---")
+    print("Place finger GENTLY between the LED and the Receiver.")
+    print("Do not press hard! Pressing hard stops blood flow.")
+    
+    # Calibration Loop
+    last_val = sensor.read_u16()
+    
+    while True:
+        current_val = sensor.read_u16()
+        
+        # Calculate the "Derivative" (Rate of Change)
+        change = current_val - last_val
+        
+        # If the change is sudden and positive, that's a pulse!
+        if change > HardwareConfig.SENSITIVITY:
+            print(f"♥ BEAT! (Delta: {change})")
+            beat_led.value(1)
+            time.sleep(0.1) # Debounce the beat
+            beat_led.value(0)
+            
+        last_val = current_val
+        time.sleep(0.02) # High speed polling (50Hz)
+
+if __name__ == "__main__":
+    main()

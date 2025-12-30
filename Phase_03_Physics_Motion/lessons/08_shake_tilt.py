@@ -4,14 +4,9 @@
 # Modules: KY-002 (Vibration) / KY-020 (Tilt)
 # Goal: Detect physical motion using a mechanical switch.
 #
-# WHY THIS MATTERS:
-# This is how a car alarm knows if someone bumped the window, or how your 
-# washing machine knows if it's "off balance." It converts a physical 
-# shock into a digital signal.
-#
-# HOW IT WORKS:
-# Inside the Vibration sensor is a tiny, loose spring. When you bump it, 
-# the spring wobbles and touches a center pin, closing the circuit.
+# ANATOMY:
+# Inside the Vibration sensor is a tiny spring. When shaken, it wobbles and
+# touches a center post, completing the circuit.
 #
 # WIRING:
 # - S (Signal) -> GP16
@@ -22,33 +17,37 @@
 import machine
 import time
 
-# --- Setup Pins ---
-# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
-# We use PULL_UP because these simple switches usually connect to GND 
-# when they vibrate. This keeps the pin at "1" until it is bumped.
-sensor = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
+class HardwareConfig:
+    PIN_SENSOR = 16
+    PIN_LED    = "LED"
+    DEBOUNCE_MS = 100
 
-led = machine.Pin("LED", machine.Pin.OUT)
-
-print("System Active. Waiting for vibration/shake...")
-
-move_count = 0
-
-while True:
-    # --- High Speed Polling ---
-    # Unlike a button which you hold down, a vibration is a MICRO-SECOND event.
-    # If the Pico "sleeps" for even 0.01 seconds, it might miss the shock!
-    # So we run this loop as fast as the CPU can handle.
+def main():
+    # 1. Setup Input (Active Low: 0 = Vibration Detected)
+    # We use PULL_UP because the switch connects to Ground when triggered.
+    sensor = machine.Pin(HardwareConfig.PIN_SENSOR, machine.Pin.IN, machine.Pin.PULL_UP)
     
-    if sensor.value() == 0: 
-        # 0 means the spring hit the center pin (Vibration occurred).
-        move_count += 1
-        print(f"BUMP DETECTED! Total: {move_count}")
-        
-        # Give the user visual feedback
-        led.value(1) 
-        time.sleep(0.1) # Debounce: Stop checking for 100ms so we don't count 1 bump as 50.
-        led.value(0)
+    # 2. Setup Output
+    led = machine.Pin(HardwareConfig.PIN_LED, machine.Pin.OUT)
     
-    # NOTICE: No 'time.sleep' here at the bottom. 
-    # We want to "listen" with 100% focus.
+    print("--- SYSTEM READY: SHAKE DETECTOR ---")
+    move_count = 0
+    
+    while True:
+        # High Speed Polling Loop
+        # Vibration is a micro-second event. We cannot sleep here!
+        if sensor.value() == 0:
+            move_count += 1
+            print(f"BUMP DETECTED! Total: {move_count}")
+            
+            # Visual Feedback
+            led.value(1)
+            
+            # Debounce: Wait for the spring to settle
+            time.sleep(HardwareConfig.DEBOUNCE_MS / 1000)
+            led.value(0)
+            
+        # No loop sleep = Maximum Responsiveness
+
+if __name__ == "__main__":
+    main()

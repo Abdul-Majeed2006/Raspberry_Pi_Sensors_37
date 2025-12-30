@@ -1,46 +1,50 @@
 # -----------------------------------------------------------------------------
-# Lesson 18: Path Finder (Tracking Sensor)
+# Lesson 18: Path Finder (Line Tracking)
 # -----------------------------------------------------------------------------
-# Module: KY-033 Tracking Sensor Module
-# Goal: Build a sensor that can "read" a path on the floor.
+# Module: KY-033 Tracking Sensor
+# Goal: Distinguish between Light (Floor) and Dark (Tape) surfaces.
 #
-# WHY THIS MATTERS:
-# This is how factory robots move parts around a warehouse. They follow a 
-# painted line on the floor. It's much cheaper and more reliable than 
-# using a camera or GPS!
-#
-# HOW IT WORKS (Absorption):
-# The sensor shoots IR light at the ground. 
-# - White Surfaces: Reflect the light back (Mirror effect).
-# - Black Lines:   Suck up the light (Absorption effect). 
-# By seeing where the light disappears, the robot knows exactly where the 
-# line is.
+# PHYSICS:
+# - White/Light surfaces REFLECT light.
+# - Black/Dark surfaces ABSORB light.
+# The sensor detects the difference in reflection.
 #
 # WIRING:
-# - S (Signal) -> GP16
-# - + (VCC)    -> 3.3V
-# - - (GND)    -> GND
+# - S -> GP16
+# - + -> 3.3V
+# - - -> GND
 # -----------------------------------------------------------------------------
 
 import machine
 import time
 
-# --- Setup Pins ---
-# We use GP16 (Pin 21) which is clustered at the bottom-right corner.
-# - 1 = Light surface (Reflection)
-# - 0 = Dark line (Absorption)
-sensor = machine.Pin(16, machine.Pin.IN)
+class HardwareConfig:
+    PIN_SENSOR = 16
+    PIN_INDICATOR = "LED"
 
-led = machine.Pin("LED", machine.Pin.OUT)
-
-print("System Active. Move the sensor eyes over a thick black marker line!")
-
-while True:
-    # Read the state of the reflection
-    if sensor.value() == 0:
-        print(">>> PATH DETECTED <<<")
-        led.value(1)
-    else:
-        led.value(0)
+def main():
+    # 1. Setup Sensor
+    # Logic depends on surface, typically:
+    # 0 = Reflection (White/Light)
+    # 1 = No Reflection (Black/Dark Line)
+    # *Note: Check your specific module behavior!
+    sensor = machine.Pin(HardwareConfig.PIN_SENSOR, machine.Pin.IN)
+    
+    indicator = machine.Pin(HardwareConfig.PIN_INDICATOR, machine.Pin.OUT)
+    
+    print("--- SYSTEM READY: LINE TRACKER ---")
+    
+    while True:
+        val = sensor.value()
         
-    time.sleep(0.1) # Check 10 times per second
+        if val == 1:
+            print(">>> ON LINE (Dark) <<<")
+            indicator.value(1)
+        else:
+            # print("...searching...") # Commented out to reduce spam
+            indicator.value(0)
+            
+        time.sleep(0.05) # FAST polling for high speed robots
+
+if __name__ == "__main__":
+    main()
